@@ -2,7 +2,7 @@
 control "Guard" as G
 participant "Pipeline Monitor" as M 
 participant "Scaler" as S
-participant "Configurer" as C
+participant "Configurator" as C
 
 loop every x seconds
     activate G
