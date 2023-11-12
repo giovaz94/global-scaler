@@ -21,18 +21,23 @@ def standard_system():
     NSFW Detector :  90    1.5
     Message Analyz: 300    1
     """
+
+    # Base configuration
+    base = np.array([1, 1, 1, 1, 1, 1, 1])
+
+    # Microservices MCL and MF
     microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 300])
     microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 1])    
 
     # Replicas for each increment
-    replicas = np.array([
+    scale_config = np.array([
         [0, 1, 0, 0, 1, 1, 1],  # Increment 1
         [1, 0, 0, 0, 0, 0, 0],  # Increment 2
         [0, 1, 0, 0, 1, 1, 1],  # Increment 3
         [0, 0, 1, 1, 0, 0, 0],  # Increment 4
     ])
 
-    return Configurator(replicas, microservices_mcl, microservices_mf)
+    return Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big=10)
 
 def test_extimate_mcl(standard_system):
     base = np.array([1, 1, 1, 1, 1, 1, 1])
@@ -49,5 +54,19 @@ def test_extimate_mcl(standard_system):
 
     config_4 = config_3 + np.array([0, 0, 1, 1, 0, 0, 0])
     assert standard_system.extimate_mcl(config_4) == 180
+
+def test_configuration(standard_system):
+    assert np.equal(standard_system.calculate_configuration(50), np.array([0, 0, 0, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(80), np.array([1, 0, 0, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(110), np.array([1, 1, 0, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(120), np.array([1, 1, 1, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(154), np.array([1, 1, 1, 1])).all()
+
+    # Etc ..... 
+    assert np.equal(standard_system.calculate_configuration(180), np.array([2, 1, 1, 1])).all()
+    assert np.equal(standard_system.calculate_configuration(220), np.array([2, 2, 1, 1])).all()
+    assert np.equal(standard_system.calculate_configuration(250), np.array([2, 2, 2, 1])).all()
+
+
 
 
