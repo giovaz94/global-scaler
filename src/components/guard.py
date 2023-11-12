@@ -2,6 +2,7 @@ import time
 import threading
 from pykka import ThreadingActor
 
+
 class Guard(ThreadingActor):
 
     def __init__(self, k_big: int, k: int, sleep: int = 10):

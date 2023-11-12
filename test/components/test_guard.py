@@ -1,11 +1,12 @@
 
-from components.guard import Guard
+
 import pytest
 import os
 import sys
 
 # Path to the src folder
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
+from components.guard import Guard  # NOQA
 
 
 @pytest.fixture()
