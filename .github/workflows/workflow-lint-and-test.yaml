@@ -26,8 +26,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Run AutoPEP8
+      run: autopep8 --in-place --recursive .
+    
     - name: Run tests with pytest
       run: python -m pytest
 
-    - name: Run Pylama
-      run: autopep8 --in-place --recursive .
+    

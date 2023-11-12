@@ -2,3 +2,4 @@ pytest
 pykka
 gevent
 autopep8
+numpy
