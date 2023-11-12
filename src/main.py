@@ -9,4 +9,3 @@ if __name__ == '__main__':
     print("Sending message to Guard")
     response = guard.ask("Hello Guard")
     print(response)
-
