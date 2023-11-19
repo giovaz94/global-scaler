@@ -1,16 +1,22 @@
-
 from components.configurator import Configurator
 
-class Scaler:
+class SysScaler:
     """
-    Scaler class will scale the system to a new configuration.
+    SysScaler class will scale the system to a new configuration.
     """
-    def __init__(self, starting_mcl: int, configurator: Configurator ) -> None:
+    def __init__(self, starting_mcl: int, configurator: Configurator) -> None:
         self.mcl = starting_mcl
         self.configurator = configurator
 
 
-    def process_request(self, target_mcl) -> None:
+    def get_mcl(self) -> int:
+        """
+        Return the current mcl of the system.
+        """
+        return self.mcl
+
+
+    def process_request(self, target_mcl) -> int:
         """
         Process a scaling request.
     
@@ -21,10 +27,10 @@ class Scaler:
         config = self.configurator.calculate_configuration(target_mcl)
 
         # TODO: Apply the configuration
-        new_mcl = self.apply_configuration(config)
+        self.mcl = self.apply_configuration(config)
 
         # TODO: Return the new mcl 
-        return new_mcl
+        return self.mcl
 
 
     def apply_configuration(self, configuration_file) -> None:

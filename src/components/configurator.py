@@ -19,7 +19,7 @@ class Configurator:
         self.components_mf = components_mf
         self.k_big = k_big
 
-    def calculate_configuration(self, target_workload):
+    def calculate_configuration(self, target_workload) -> tuple:
         """
         Calculate the new configuration of the system.
         """
@@ -37,7 +37,7 @@ class Configurator:
                     break
             if config_found:
                 break
-        return deltas
+        return deltas, mcl
 
     def configuration_found(self, sys_mcl, target_workload, k_big) -> bool:
         """
@@ -45,7 +45,7 @@ class Configurator:
         """
         return sys_mcl - (target_workload + k_big) >= 0
     
-    def extimate_mcl(self, deployed_instances):
+    def extimate_mcl(self, deployed_instances) -> int:
         """
         Calculate an extimation of the system's mcl.
         """

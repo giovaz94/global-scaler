@@ -12,14 +12,15 @@ def standard_system():
     """             
     Current system given to the configurator:
 
-                    MCL    MF 
-    Message Parser: 110    1
-    Virus Scanner : 120    2
-    Attachment Man: 231    1.5
-    Image Analyzer: 231    1.5
-    Image Rec     :  90    1.5
-    NSFW Detector :  90    1.5
-    Message Analyz: 300    1
+    IDX | Service name  | MCL | MF
+    ------------------------------ 
+    0   Message Parser   110    1
+    1   Virus Scanner    120    2
+    2   Attachment Man   231    1.5
+    3   Image Analyzer   231    1.5
+    4   Image Rec         90    1.5
+    5   NSFW Detector     90    1.5
+    6   Message Analyz   300    1
     """
 
     # Base configuration
@@ -56,16 +57,16 @@ def test_extimate_mcl(standard_system):
     assert standard_system.extimate_mcl(config_4) == 180
 
 def test_configuration(standard_system):
-    assert np.equal(standard_system.calculate_configuration(50), np.array([0, 0, 0, 0])).all()
-    assert np.equal(standard_system.calculate_configuration(80), np.array([1, 0, 0, 0])).all()
-    assert np.equal(standard_system.calculate_configuration(110), np.array([1, 1, 0, 0])).all()
-    assert np.equal(standard_system.calculate_configuration(120), np.array([1, 1, 1, 0])).all()
-    assert np.equal(standard_system.calculate_configuration(154), np.array([1, 1, 1, 1])).all()
+    assert np.equal(standard_system.calculate_configuration(50)[0], np.array([0, 0, 0, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(80)[0], np.array([1, 0, 0, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(110)[0], np.array([1, 1, 0, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(120)[0], np.array([1, 1, 1, 0])).all()
+    assert np.equal(standard_system.calculate_configuration(154)[0], np.array([1, 1, 1, 1])).all()
 
     # Etc ..... 
-    assert np.equal(standard_system.calculate_configuration(180), np.array([2, 1, 1, 1])).all()
-    assert np.equal(standard_system.calculate_configuration(220), np.array([2, 2, 1, 1])).all()
-    assert np.equal(standard_system.calculate_configuration(250), np.array([2, 2, 2, 1])).all()
+    assert np.equal(standard_system.calculate_configuration(180)[0], np.array([2, 1, 1, 1])).all()
+    assert np.equal(standard_system.calculate_configuration(220)[0], np.array([2, 2, 1, 1])).all()
+    assert np.equal(standard_system.calculate_configuration(250)[0], np.array([2, 2, 2, 1])).all()
 
 
 

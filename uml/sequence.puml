@@ -1,7 +1,7 @@
 @startuml
 control "Guard" as G
 participant "Pipeline Monitor" as M 
-control "Scaler" as S
+control "SysScaler" as S
 participant "Configurator" as C
 
 loop every x seconds
