@@ -8,13 +8,11 @@ class SysScaler:
         self.mcl = starting_mcl
         self.configurator = configurator
 
-
     def get_mcl(self) -> int:
         """
         Return the current mcl of the system.
         """
         return self.mcl
-
 
     def process_request(self, target_mcl) -> int:
         """
@@ -31,7 +29,6 @@ class SysScaler:
 
         # TODO: Return the new mcl 
         return self.mcl
-
 
     def apply_configuration(self, configuration_file) -> None:
         """

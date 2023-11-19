@@ -1,33 +1,25 @@
-
-
 import pytest
-import os
-import sys
+from unittest.mock import patch, create_autospec
+from components.guard import Guard
+from components.sys_scaler import SysScaler
 
-# Path to the src folder
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
-from components.guard import Guard  # NOQA
+@pytest.fixture
+def mock_scaler():
+    MockScaler = create_autospec(SysScaler, spec_set=True)
+    MockScaler.get_mcl.return_value = 60
+    return MockScaler
 
+@pytest.fixture
+def standard_guard(mock_scaler):
+    return Guard(mock_scaler, k_big=2, k=5, sleep=2)
 
-@pytest.fixture()
-def standard_guard():
-    guard = Guard.start(k_big=2, k=5, sleep=2).proxy()
-    yield guard
-    guard.stop()
+def test_get_system_mcl(mock_scaler, standard_guard):
+    with patch.object(standard_guard, 'get_inbound_workload', return_value=5):
+        # The current system mcl is 60, the inbound workload is 5 then we should downscale
+        assert standard_guard.should_scale() == True
+    
+    with patch.object(standard_guard, 'get_inbound_workload', return_value=100), \
+         patch.object(mock_scaler, 'get_mcl', return_value=80):
+        # Now the inbound_workload is bigger than the system mcl, then we should upscale
+        assert standard_guard.should_scale() == True
 
-
-def test_get_system_mcl(monkeypatch, standard_guard):
-    monkeypatch.setattr(standard_guard, "get_system_mcl", lambda: 60)
-    assert standard_guard.get_system_mcl().get() == 60
-
-
-def test_get_inbound_workload(monkeypatch, standard_guard):
-    monkeypatch.setattr(standard_guard, "get_inbound_workload", lambda: 60)
-    assert standard_guard.get_inbound_workload().get() == 60
-
-
-# def test_scaling_request(monkeypatch, standard_guard):
-#     monkeypatch.setattr(standard_guard, "get_system_mcl", lambda: 60)
-#     monkeypatch.setattr(standard_guard, "get_inbound_workload", lambda: 90)
-
-#     assert standard_guard.should_scale().get() == True

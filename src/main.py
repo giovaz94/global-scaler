@@ -2,6 +2,7 @@
 import numpy as np
 from components.configurator import Configurator
 from components.sys_scaler import SysScaler
+from components.guard import Guard
 
 if __name__ == '__main__':
 
@@ -20,9 +21,12 @@ if __name__ == '__main__':
         [0, 0, 1, 1, 0, 0, 0],  # Increment 4
     ])
 
-    config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big=10)
-    scaler = SysScaler(60, config)
+    k_big = 10
+    k = 1
 
-    mcl = scaler.process_request(110)
+    config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
+    scaler = SysScaler(60, config)
+    guard = Guard(scaler, k_big, k)
+    guard.start()
 
 

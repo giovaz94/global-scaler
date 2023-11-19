@@ -11,6 +11,7 @@ class Configurator:
     scale_components -> a numpy array that stores the services replicas for each increment
     components_mcl -> a numpy array that stores the mcl of each service
     components_mf -> a numpy array that stores the multiplicative factor of each service
+    k_big -> the k_big value
     """
     def __init__(self, base_config ,scale_components, components_mcl, components_mf, k_big: int = 10):
         self.base_config = base_config
