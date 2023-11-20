@@ -40,6 +40,7 @@ class Guard():
         if monitor_url:
             response = requests.get(endpoint).json()
             return response["inbound_workload"]
+        
         return 0
 
     def should_scale(self) -> bool:
