@@ -1,6 +1,8 @@
 import time
 import threading
+import requests
 from components.sys_scaler import SysScaler
+import os
 class Guard():
 
     def __init__(self, scaler: SysScaler, k_big: int, k: int, sleep: int = 10):
@@ -12,7 +14,6 @@ class Guard():
         self.request_scaling = False
         self.scaler = scaler
 
-        
     def start(self) -> None:
         """
         Start the guard process.
@@ -21,7 +22,6 @@ class Guard():
         """
         self.guard_thread = threading.Thread(target=self.guard)
         self.guard_thread.start()
-
 
     def stop(self) -> None:
         """
@@ -35,6 +35,11 @@ class Guard():
         Return the inbound workload of the system, 
         querying the external monitoring system.
         """
+        monitor_url = os.environ.get("DB_URL")
+        endpoint = monitor_url + "/inboundWorkload"
+        if monitor_url:
+            response = requests.get(endpoint).json()
+            return response["inbound_workload"]
         return 0
 
     def should_scale(self) -> bool:

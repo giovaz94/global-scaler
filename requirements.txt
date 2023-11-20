@@ -4,3 +4,4 @@ gevent
 autopep8
 numpy
 kubernetes
+requests
