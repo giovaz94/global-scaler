@@ -28,10 +28,10 @@ class SysScaler:
         -----------
         target_mcl -> the target mcl to reach 
         """
-        config = self.configurator.calculate_configuration(target_mcl)
+        deltas, mcl = self.configurator.calculate_configuration(target_mcl)
 
         # TODO: Apply the configuration
-        self.mcl = self.apply_configuration(config)
+        self.mcl = self.apply_configuration(deltas)
 
         # TODO: Return the new mcl 
         return self.mcl
@@ -45,6 +45,8 @@ class SysScaler:
         configuration_file -> configuration to apply in the system
         """
         
+        
+
         pass
 
     def deploy_pod(self, manifest_file_path) -> bool:
