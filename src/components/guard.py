@@ -40,8 +40,8 @@ class Guard():
         if monitor_url:
             response = requests.get(endpoint).json()
             return response["inbound_workload"]
-        
-        return 0
+        else:
+            raise Exception("DB_URL not set")
 
     def should_scale(self) -> bool:
         """
