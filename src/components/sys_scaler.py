@@ -1,4 +1,5 @@
 import yaml
+import os
 from kubernetes import client, config
 from components.configurator import Configurator
 from kubernetes.client.rest import ApiException
@@ -7,11 +8,13 @@ class SysScaler:
     """
     SysScaler class will scale the system to a new configuration.
     """
-    def __init__(self, starting_mcl: int, configurator: Configurator) -> None:
+    def __init__(self, configurator: Configurator, starting_mcl: int) -> None:
         self.mcl = starting_mcl
         self.configurator = configurator
-    
-        config.load_incluster_config()
+        if os.environ.get("ON_LOCAL_ENV") == "true":
+            config.load_kube_config()
+        else:
+            config.load_incluster_config()
         self.k8s_client = client.CoreV1Api()
 
     def get_mcl(self) -> int:
@@ -28,7 +31,7 @@ class SysScaler:
         -----------
         target_mcl -> the target mcl to reach 
         """
-        deltas, mcl = self.configurator.calculate_configuration(target_mcl)
+        deltas, _ = self.configurator.calculate_configuration(target_mcl)
 
         # TODO: Apply the configuration
         self.mcl = self.apply_configuration(deltas)
@@ -44,9 +47,6 @@ class SysScaler:
         -----------
         configuration_file -> configuration to apply in the system
         """
-        
-        
-
         pass
 
     def deploy_pod(self, manifest_file_path) -> bool:

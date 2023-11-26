@@ -26,7 +26,7 @@ if __name__ == '__main__':
     sleep = 2
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
-    scaler = SysScaler(60, config)
+    scaler = SysScaler(config, 60)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()
 
