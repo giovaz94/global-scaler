@@ -14,26 +14,26 @@ class Configurator:
     k_big -> the k_big value
     """
     def __init__(self, base_config ,scale_components, components_mcl, components_mf, k_big: int = 10):
-        self.base_config = base_config
-        self.scale_components = scale_components
-        self.components_mcl = components_mcl
-        self.components_mf = components_mf
-        self.k_big = k_big
+        self._base_config = base_config
+        self._scale_components = scale_components
+        self._components_mcl = components_mcl
+        self._components_mf = components_mf
+        self._k_big = k_big
 
     def calculate_configuration(self, target_workload) -> tuple:
         """
         Calculate the new configuration of the system.
         """
-        config = np.copy(self.base_config)
-        deltas = np.zeros(len(self.scale_components))
-        mcl = self.extimate_mcl(self.base_config)
-        while not self.configuration_found(mcl, target_workload, self.k_big):
+        config = self._base_config.copy()
+        deltas = np.zeros(len(self._scale_components))
+        mcl = self.extimate_mcl(self._base_config)
+        while not self.configuration_found(mcl, target_workload, self._k_big):
             config_found = False
-            for i in range(len(self.scale_components)):
-                config += self.scale_components[i]
+            for i in range(len(self._scale_components)):
+                config += self._scale_components[i]
                 deltas[i] += 1
                 mcl = self.extimate_mcl(config)
-                if self.configuration_found(mcl, target_workload, self.k_big):
+                if self.configuration_found(mcl, target_workload, self._k_big):
                     config_found = True
                     break
             if config_found:
@@ -50,4 +50,4 @@ class Configurator:
         """
         Calculate an extimation of the system's mcl.
         """
-        return np.min(deployed_instances * self.components_mcl / self.components_mf)
+        return np.min(deployed_instances * self._components_mcl / self._components_mf)

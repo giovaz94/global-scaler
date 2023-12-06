@@ -22,7 +22,7 @@ def test_configuration(standard_configurator):
     assert np.equal(standard_configurator.calculate_configuration(110)[0], np.array([1, 1, 0, 0])).all()
     assert np.equal(standard_configurator.calculate_configuration(120)[0], np.array([1, 1, 1, 0])).all()
     assert np.equal(standard_configurator.calculate_configuration(154)[0], np.array([1, 1, 1, 1])).all()
-
+    
     # Etc ..... 
     assert np.equal(standard_configurator.calculate_configuration(180)[0], np.array([2, 1, 1, 1])).all()
     assert np.equal(standard_configurator.calculate_configuration(220)[0], np.array([2, 2, 1, 1])).all()

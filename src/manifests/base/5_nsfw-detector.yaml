@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  generateName: sys-pod-nsfw-detector-
+spec:
+  containers:
+  - name: nsfw-detector
+    image: giovaz94/nsfw-detector-service:development
+    resources:
+      requests:
+        cpu: 300m
+        memory: 200M
+  spec:
+    nodeSelector:
+      kubernetes.io/hostname: k3d-k3s-default-agent-0
