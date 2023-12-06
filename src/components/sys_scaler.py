@@ -33,10 +33,6 @@ class SysScaler:
         -----------
         target_mcl -> the target mcl to reach 
         """
-        print(f"Actual mcl: {self.mcl}")
-        print(f"Target mcl: {target_mcl}")
-        print(f"Total increment: {self.total_increment}")
-
         deltas, mcl = self.configurator.calculate_configuration(target_mcl)
         if self.total_increment is None:
             increments_to_apply = deltas
@@ -52,12 +48,6 @@ class SysScaler:
             self.total_increment += increments_to_apply
 
         self.mcl = mcl
-        print(f"New mcl: {self.mcl}")
-        print(f"New total increment: {self.total_increment}")
-        print()
-
-    
-
         return self.mcl
 
     def _apply_increment(self, inc_idx) -> None:
@@ -72,12 +62,21 @@ class SysScaler:
             if inc_idx[i] == 0:
                 continue
             idx = i + 1
-            for _ in range(int(inc_idx[i])):
-                manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "manifests", f"inc_{idx}")
-                manifest_files = os.listdir(manifest_path)
+            manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "manifests", f"inc_{idx}")
+            manifest_files = os.listdir(manifest_path)
+            num = int(inc_idx[i])
+            iter_number = abs(num)
+            for _ in range(iter_number):
                 for file in manifest_files:
-                    self._deploy_pod(os.path.join(manifest_path, file))
-
+                    if num > 0:
+                        self._deploy_pod(os.path.join(manifest_path, file))
+                    else:
+                        with open(os.path.join(manifest_path, file), 'r') as manifest_file:
+                            pod_manifest = yaml.safe_load(manifest_file)
+                            image_name = pod_manifest["spec"]["containers"][0]["image"]
+                            self._delete_pod_by_image(image_name)
+    
+                
     def _deploy_pod(self, manifest_file_path) -> None:
         """
         Deploy a pod in the cluster.
@@ -92,3 +91,23 @@ class SysScaler:
                 self.k8s_client.create_namespaced_pod(body=pod_manifest, namespace="default")
         except ApiException as e:
             raise Exception(f"Error deploying pod: {e}")
+
+    def _delete_pod_by_image(self, image_name) -> None:
+        """
+        Delete a pod by image name.
+        The deleted pod must be in a healthy state.
+
+        Arguments
+        -----------
+        image_name -> the image name of the pod to delete
+        """
+        pods = self.k8s_client.list_pod_for_all_namespaces(watch=False)
+        for pod in pods.items:
+            if pod.spec.containers[0].image == image_name and pod.status.phase == "Running":
+                pod_name = pod.metadata.name
+                try:
+                    print(f"Deleting pod --> {pod_name}")
+                    self.k8s_client.delete_namespaced_pod(name=pod_name, namespace="default")
+                    return None
+                except Exception as e:
+                    print(f"Error deleting poduu '{pod_name}' in namespace default: {e}")
