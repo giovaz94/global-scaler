@@ -1,8 +1,9 @@
 import yaml
 import os
-import numpy as np
+import time
 from kubernetes import client, config
 from components.configurator import Configurator
+from components.deployment import deploy_pod, delete_pod_by_image
 from kubernetes.client.rest import ApiException
 
 class SysScaler:
@@ -69,45 +70,11 @@ class SysScaler:
             for _ in range(iter_number):
                 for file in manifest_files:
                     if num > 0:
-                        self._deploy_pod(os.path.join(manifest_path, file))
+                        deploy_pod(self.k8s_client, os.path.join(manifest_path, file))
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
-                            self._delete_pod_by_image(image_name)
+                            node_name = pod_manifest["spec"]["nodeName"]
+                            delete_pod_by_image(self.k8s_client, image_name, node_name)
     
-                
-    def _deploy_pod(self, manifest_file_path) -> None:
-        """
-        Deploy a pod in the cluster.
-
-        Arguments
-        -----------
-        manifest_file_path -> path to the manifest file to deploy
-        """
-        try:
-            with open(manifest_file_path, 'r') as manifest_file:
-                pod_manifest = yaml.safe_load(manifest_file)
-                self.k8s_client.create_namespaced_pod(body=pod_manifest, namespace="default")
-        except ApiException as e:
-            raise Exception(f"Error deploying pod: {e}")
-
-    def _delete_pod_by_image(self, image_name) -> None:
-        """
-        Delete a pod by image name.
-        The deleted pod must be in a healthy state.
-
-        Arguments
-        -----------
-        image_name -> the image name of the pod to delete
-        """
-        pods = self.k8s_client.list_pod_for_all_namespaces(watch=False)
-        for pod in pods.items:
-            if pod.spec.containers[0].image == image_name and pod.status.phase == "Running":
-                pod_name = pod.metadata.name
-                try:
-                    print(f"Deleting pod --> {pod_name}")
-                    self.k8s_client.delete_namespaced_pod(name=pod_name, namespace="default")
-                    return None
-                except Exception as e:
-                    print(f"Error deleting poduu '{pod_name}' in namespace default: {e}")

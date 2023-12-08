@@ -1,9 +1,11 @@
 import pytest
 import numpy as np
-from kubernetes import client, config
-from components.sys_scaler import SysScaler
+
 from components.configurator import Configurator  
 from components.sys_scaler import SysScaler
+from components.guard import Guard
+
+from kubernetes.client.rest import ApiException
 
 @pytest.fixture()
 def standard_configurator():
@@ -38,15 +40,13 @@ def standard_configurator():
 
     return Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big=10)
 
-@pytest.fixture
-def standard_guard(standard_configurator):
-    return SysScaler(60, standard_configurator)
 
-@pytest.fixture
-def kubernetes_client():
-    config.load_kube_config()
-    return client.CoreV1Api()
 
 @pytest.fixture
 def standard_sys_scaler(standard_configurator):
     return SysScaler(standard_configurator, 60)
+
+@pytest.fixture
+def standard_guard(standard_sys_scaler):
+    return Guard(standard_sys_scaler, k_big=2, k=5, sleep=2)
+

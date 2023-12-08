@@ -3,13 +3,8 @@ kind: Pod
 metadata:
   generateName: sys-pod-image-analyzer-
 spec:
+  nodeName: k3d-k3s-default-agent-1
   containers:
   - name: image-analyzer
     image: giovaz94/image-analyzer-service:development
-    resources:
-      requests:
-        cpu: 300m
-        memory: 200M
-  spec:
-    nodeSelector:
-      kubernetes.io/hostname: k3d-k3s-default-agent-1
+  
