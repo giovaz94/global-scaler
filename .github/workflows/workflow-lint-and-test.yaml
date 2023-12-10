@@ -1,13 +1,6 @@
-name: Test and clean the code
+name: Test code
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
-
+on: push
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,11 +18,15 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Run AutoPEP8
-      run: autopep8 --in-place --recursive .
+    
+    - name: Create the test cluster
+      uses: AbsaOSS/k3d-action@v2
+      with:
+        cluster-name: "test-cluster"
+        args: >-
+          -p "8010:80@agent:0"
+          --agents 3
     
     - name: Run tests with pytest
       run: python -m pytest
-
     
