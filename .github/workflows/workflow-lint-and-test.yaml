@@ -32,5 +32,8 @@ jobs:
         export INCLUSTER_CONFIG=true
       
     - name: Run tests with pytest
+      env:
+        INCLUSTER_CONFIG: "true"
+
       run: python -m pytest
     
