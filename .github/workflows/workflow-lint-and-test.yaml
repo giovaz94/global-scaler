@@ -22,7 +22,7 @@ jobs:
     - name: Create the test cluster
       uses: AbsaOSS/k3d-action@v2
       with:
-        cluster-name: "test-cluster"
+        cluster-name: "k3s-default"
         args: >-
           -p "8010:80@agent:0"
           --agents 3
