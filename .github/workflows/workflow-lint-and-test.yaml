@@ -27,6 +27,12 @@ jobs:
           -p "8010:80@agent:0"
           --agents 3
     
+    - name: Wait for Cluster to be Ready
+      run: |
+        kubectl cluster-info
+        kubectl get nodes
+        kubectl wait --for=condition=Ready node --all --timeout=5m
+    
     - name: Run tests with pytest
       run: pytest -s 
     
