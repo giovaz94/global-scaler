@@ -36,3 +36,9 @@ jobs:
     - name: Run tests with pytest
       run: pytest -s 
     
+    - name: Debug Cluster Info
+      run: |
+        kubectl cluster-info
+        kubectl get nodes
+        kubectl get pods --all-namespaces
+        kubectl get events --sort-by=.metadata.creationTimestamp
