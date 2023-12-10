@@ -17,10 +17,7 @@ def deploy_pod(client, manifest_file_path) -> None:
             pod_manifest = yaml.safe_load(manifest_file)
             pod = client.create_namespaced_pod(body=pod_manifest, namespace="default")
             pod_name = pod.metadata.name
-            
-            # Wait for pod to be running
-            time.sleep(3)
-
+            print(f"Deploying pod {pod_name}...")
             while True:
                 pod_info = client.read_namespaced_pod_status(pod_name, "default")
                 if pod_info.status.phase == 'Running':

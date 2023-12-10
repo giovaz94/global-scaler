@@ -26,6 +26,7 @@ jobs:
         args: >-
           -p "8010:80@agent:0"
           --agents 3
+          --k3s-arg "--no-deploy=metrics-server@server:*"
     
     - name: Wait for Cluster to be Ready
       run: |
