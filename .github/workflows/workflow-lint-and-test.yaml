@@ -28,5 +28,5 @@ jobs:
           --agents 3
     
     - name: Run tests with pytest
-      run: python -m pytest
+      run: pytest -s 
     
