@@ -1,6 +1,5 @@
 import yaml
 import os
-import time
 from kubernetes import client, config
 from components.configurator import Configurator
 from components.deployment import deploy_pod, delete_pod_by_image
