@@ -28,18 +28,6 @@ jobs:
           --agents 3
           --k3s-arg "--no-deploy=metrics-server@server:*"
     
-    - name: Wait for Cluster to be Ready
-      run: |
-        kubectl cluster-info
-        kubectl get nodes
-        kubectl wait --for=condition=Ready node --all --timeout=5m
-    
     - name: Run tests with pytest
       run: pytest -s 
     
-    - name: Debug Cluster Info
-      run: |
-        kubectl cluster-info
-        kubectl get nodes
-        kubectl get pods --all-namespaces
-        kubectl get events --sort-by=.metadata.creationTimestamp

@@ -11,23 +11,23 @@ from components.deployment import deploy_pod, delete_pod
 @pytest.fixture
 def env_configurations():
     return {
-        # 50 : {
-        #     "mcl" : 60,
-        #     "nodes" : {
-        #         "k3d-k3s-default-agent-0" : [
-        #             ("giovaz94/virus-scanner-service:development", 1),
-        #             ("giovaz94/attachment-manager-service:development", 1),
-        #             ("giovaz94/image-recognizer-service:development", 1),
-        #             ("giovaz94/nsfw-detector-service:development", 1),
-        #         ],
-        #         "k3d-k3s-default-agent-1" : [
-        #             ("giovaz94/parser-service:development", 1),
-        #             ("giovaz94/image-analyzer-service:development", 1),
-        #             ("giovaz94/message-analyzer-service:development", 1),
-        #         ],
-        #         "k3d-k3s-default-agent-2" : []
-        #     },
-        # },
+        50 : {
+            "mcl" : 60,
+            "nodes" : {
+                "k3d-k3s-default-agent-0" : [
+                    ("giovaz94/virus-scanner-service:development", 1),
+                    ("giovaz94/attachment-manager-service:development", 1),
+                    ("giovaz94/image-recognizer-service:development", 1),
+                    ("giovaz94/nsfw-detector-service:development", 1),
+                ],
+                "k3d-k3s-default-agent-1" : [
+                    ("giovaz94/parser-service:development", 1),
+                    ("giovaz94/image-analyzer-service:development", 1),
+                    ("giovaz94/message-analyzer-service:development", 1),
+                ],
+                "k3d-k3s-default-agent-2" : []
+            },
+        },
         80 : {
             "mcl" : 110,
             "nodes" : {
@@ -49,74 +49,74 @@ def env_configurations():
                 ]
             },
         },
-        # 110 : {
-        #     "mcl" : 120,
-        #     "nodes" : {
-        #         "k3d-k3s-default-agent-0" : [
-        #             ("giovaz94/virus-scanner-service:development", 1),
-        #             ("giovaz94/attachment-manager-service:development", 1),
-        #             ("giovaz94/image-recognizer-service:development", 1),
-        #             ("giovaz94/nsfw-detector-service:development", 1),
-        #         ],
-        #         "k3d-k3s-default-agent-1" : [
-        #             ("giovaz94/parser-service:development", 1),
-        #             ("giovaz94/image-analyzer-service:development", 1),
-        #             ("giovaz94/message-analyzer-service:development", 2),
-        #             ("giovaz94/image-recognizer-service:development", 1),
-        #             ("giovaz94/nsfw-detector-service:development", 1),
-        #         ],
-        #         "k3d-k3s-default-agent-2" : [
-        #             ("giovaz94/virus-scanner-service:development", 1),
-        #             ("giovaz94/parser-service:development", 1),
-        #         ]
-        #     },
-        # },
-        # 120 : {
-        #     "mcl" : 154,
-        #     "nodes" : {
-        #         "k3d-k3s-default-agent-0" : [
-        #             ("giovaz94/virus-scanner-service:development", 1),
-        #             ("giovaz94/attachment-manager-service:development", 1),
-        #             ("giovaz94/image-recognizer-service:development", 1),
-        #             ("giovaz94/nsfw-detector-service:development", 1),
-        #         ],
-        #         "k3d-k3s-default-agent-1" : [
-        #             ("giovaz94/parser-service:development", 1),
-        #             ("giovaz94/image-analyzer-service:development", 1),
-        #             ("giovaz94/message-analyzer-service:development", 3),
-        #             ("giovaz94/image-recognizer-service:development", 2),
-        #             ("giovaz94/nsfw-detector-service:development", 2),
-        #         ],
-        #         "k3d-k3s-default-agent-2" : [
-        #             ("giovaz94/virus-scanner-service:development", 2),
-        #             ("giovaz94/parser-service:development", 1),
-        #         ]
-        #     },
-        # },
-        # 154 : {
-        #     "mcl" : 180,
-        #     "nodes" : {
-        #         "k3d-k3s-default-agent-0" : [
-        #             ("giovaz94/virus-scanner-service:development", 1),
-        #             ("giovaz94/attachment-manager-service:development", 1),
-        #             ("giovaz94/image-recognizer-service:development", 1),
-        #             ("giovaz94/nsfw-detector-service:development", 1),
-        #         ],
-        #         "k3d-k3s-default-agent-1" : [
-        #             ("giovaz94/parser-service:development", 1),
-        #             ("giovaz94/image-analyzer-service:development", 1),
-        #             ("giovaz94/message-analyzer-service:development", 3),
-        #             ("giovaz94/image-recognizer-service:development", 2),
-        #             ("giovaz94/nsfw-detector-service:development", 2),
-        #         ],
-        #         "k3d-k3s-default-agent-2" : [
-        #             ("giovaz94/virus-scanner-service:development", 2),
-        #             ("giovaz94/parser-service:development", 1),
-        #             ("giovaz94/attachment-manager-service:development", 1),
-        #             ("giovaz94/message-analyzer-service:development", 1),
-        #         ]
-        #     },
-        # },
+        110 : {
+            "mcl" : 120,
+            "nodes" : {
+                "k3d-k3s-default-agent-0" : [
+                    ("giovaz94/virus-scanner-service:development", 1),
+                    ("giovaz94/attachment-manager-service:development", 1),
+                    ("giovaz94/image-recognizer-service:development", 1),
+                    ("giovaz94/nsfw-detector-service:development", 1),
+                ],
+                "k3d-k3s-default-agent-1" : [
+                    ("giovaz94/parser-service:development", 1),
+                    ("giovaz94/image-analyzer-service:development", 1),
+                    ("giovaz94/message-analyzer-service:development", 2),
+                    ("giovaz94/image-recognizer-service:development", 1),
+                    ("giovaz94/nsfw-detector-service:development", 1),
+                ],
+                "k3d-k3s-default-agent-2" : [
+                    ("giovaz94/virus-scanner-service:development", 1),
+                    ("giovaz94/parser-service:development", 1),
+                ]
+            },
+        },
+        120 : {
+            "mcl" : 154,
+            "nodes" : {
+                "k3d-k3s-default-agent-0" : [
+                    ("giovaz94/virus-scanner-service:development", 1),
+                    ("giovaz94/attachment-manager-service:development", 1),
+                    ("giovaz94/image-recognizer-service:development", 1),
+                    ("giovaz94/nsfw-detector-service:development", 1),
+                ],
+                "k3d-k3s-default-agent-1" : [
+                    ("giovaz94/parser-service:development", 1),
+                    ("giovaz94/image-analyzer-service:development", 1),
+                    ("giovaz94/message-analyzer-service:development", 3),
+                    ("giovaz94/image-recognizer-service:development", 2),
+                    ("giovaz94/nsfw-detector-service:development", 2),
+                ],
+                "k3d-k3s-default-agent-2" : [
+                    ("giovaz94/virus-scanner-service:development", 2),
+                    ("giovaz94/parser-service:development", 1),
+                ]
+            },
+        },
+        154 : {
+            "mcl" : 180,
+            "nodes" : {
+                "k3d-k3s-default-agent-0" : [
+                    ("giovaz94/virus-scanner-service:development", 1),
+                    ("giovaz94/attachment-manager-service:development", 1),
+                    ("giovaz94/image-recognizer-service:development", 1),
+                    ("giovaz94/nsfw-detector-service:development", 1),
+                ],
+                "k3d-k3s-default-agent-1" : [
+                    ("giovaz94/parser-service:development", 1),
+                    ("giovaz94/image-analyzer-service:development", 1),
+                    ("giovaz94/message-analyzer-service:development", 3),
+                    ("giovaz94/image-recognizer-service:development", 2),
+                    ("giovaz94/nsfw-detector-service:development", 2),
+                ],
+                "k3d-k3s-default-agent-2" : [
+                    ("giovaz94/virus-scanner-service:development", 2),
+                    ("giovaz94/parser-service:development", 1),
+                    ("giovaz94/attachment-manager-service:development", 1),
+                    ("giovaz94/message-analyzer-service:development", 1),
+                ]
+            },
+        },
     }
 
 @pytest.fixture
