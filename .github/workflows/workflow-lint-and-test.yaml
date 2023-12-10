@@ -27,6 +27,10 @@ jobs:
           -p "8010:80@agent:0"
           --agents 3
     
+    - name: Setup env variables
+      run: |
+        export INCLUSTER_CONFIG=true
+      
     - name: Run tests with pytest
       run: python -m pytest
     
