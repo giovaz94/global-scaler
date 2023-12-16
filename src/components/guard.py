@@ -3,6 +3,7 @@ import threading
 import requests
 from components.sys_scaler import SysScaler
 import os
+import sys
 class Guard():
 
     def __init__(self, scaler: SysScaler, k_big: int, k: int, sleep: int = 10):
@@ -36,9 +37,11 @@ class Guard():
         querying the external monitoring system.
         """
         monitor_url = os.environ.get("DB_URL")
-        endpoint = monitor_url + "/inboundWorkload"
         if monitor_url:
+            endpoint = monitor_url + "/inboundWorkload"
             response = requests.get(endpoint).json()
+            print(f"Inbound workload registered {response['inbound_workload']}")
+            sys.stdout.flush()
             return response["inbound_workload"]
         else:
             raise Exception("DB_URL not set")
@@ -58,9 +61,9 @@ class Guard():
         while self.running:
             print("Monitoring the system...")
             if self.should_scale():
-                # Prevent multiple scaling requests
-                self.request_scaling = True
-                #  TODO: send scaling request to the system
+                print("Scaling the system...")
+                sys.stdout.flush()
+                self.scaler.process_request(self.get_inbound_workload())
             time.sleep(self.sleep)
 
     def cleanup_actor(self):

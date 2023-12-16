@@ -1,9 +1,9 @@
 import yaml
 import os
+import sys
 from kubernetes import client, config
 from components.configurator import Configurator
 from components.deployment import deploy_pod, delete_pod_by_image
-from kubernetes.client.rest import ApiException
 
 class SysScaler:
     """
@@ -40,6 +40,7 @@ class SysScaler:
             increments_to_apply = deltas - self.total_increment
         
         print(f"Increments to apply: {increments_to_apply}")
+        sys.stdout.flush()
         self._apply_increment(increments_to_apply)
 
         if self.total_increment is None:
