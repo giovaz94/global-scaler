@@ -7,6 +7,7 @@ class Configurator:
 
     Arguments
     -----------
+    base_config -> a numpy array that stores the base configuration of the system
     mcl_increments -> a numpy array that stores the mcl's increments of the system
     scale_components -> a numpy array that stores the services replicas for each increment
     components_mcl -> a numpy array that stores the mcl of each service
@@ -42,7 +43,7 @@ class Configurator:
 
     def configuration_found(self, sys_mcl, target_workload, k_big) -> bool:
         """
-        Return true if the configuration is greather than 0
+        Return true if the configuration is greater than 0
         """
         return sys_mcl - (target_workload + k_big) >= 0
     

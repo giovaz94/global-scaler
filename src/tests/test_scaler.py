@@ -1,4 +1,6 @@
 import os
+
+import numpy as np
 import yaml
 import pytest
 import time
@@ -124,7 +126,7 @@ def kubernetes_client() -> client.ApiClient:
     """
     Return a kubernetes client.
     Before the test, it will deploy the base services.
-    After the test, it will cleanup all the pods.
+    After the test, it will clean up all the pods.
     """
     if os.environ.get("INCLUSTER_CONFIG") == "true":
         config.load_incluster_config()
@@ -183,25 +185,42 @@ def _get_status(client):
             status[pod.spec.node_name].append((image_name, 1))
     return status
 
+def _check_configuration(kubernetes_client, scaler, current_mcl_request, configuration):
+    system_mcl = configuration["mcl"]
+    mcl, _ = scaler.process_request(current_mcl_request)
+    assert mcl == system_mcl
+    actual_status = _get_status(kubernetes_client)
+    for node_name, expected_pods in configuration["nodes"].items():
+        actual_pods = actual_status[node_name]
+        assert len(actual_pods) == len(expected_pods)
+        for actual_pod in actual_pods:
+            assert actual_pod in expected_pods
+
+
+
 def test_scale_up(kubernetes_client, standard_sys_scaler, env_configurations):
     for current_mcl_request, configuration in env_configurations.items():
-        system_mcl = configuration["mcl"]
-        assert standard_sys_scaler.process_request(current_mcl_request) == system_mcl
-        actual_status = _get_status(kubernetes_client)
-        for node_name, expected_pods in configuration["nodes"].items():
-            actual_pods = actual_status[node_name]
-            assert len(actual_pods) == len(expected_pods)
-            for actual_pod in actual_pods:
-                assert actual_pod in expected_pods
+        _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
     
 def test_scale_down(kubernetes_client, standard_sys_scaler, env_configurations):
     for current_mcl_request, configuration in reversed(env_configurations.items()):
-        system_mcl = configuration["mcl"]
-        assert standard_sys_scaler.process_request(current_mcl_request) == system_mcl
-        actual_status = _get_status(kubernetes_client)
-        for node_name, expected_pods in configuration["nodes"].items():
-            actual_pods = actual_status[node_name]
-            assert len(actual_pods) == len(expected_pods)
-            for actual_pod in actual_pods:
-                assert actual_pod in expected_pods
+        _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
 
+def test_minor_scaling(kubernetes_client, standard_sys_scaler, env_configurations):
+    _, increments = standard_sys_scaler.process_request(0)
+    assert np.equal(increments, np.array([0, 0, 0, 0])).all()
+
+    _, increments = standard_sys_scaler.process_request(88.3)
+    current_mcl_request = 80
+    configuration = env_configurations[current_mcl_request]
+    _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
+
+    assert np.equal(increments, np.array([1, 0, 0, 0])).all()
+    time.sleep(5)
+
+    _, increments = standard_sys_scaler.process_request(0)
+    current_mcl_request = 50
+    configuration = env_configurations[current_mcl_request]
+    _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
+
+    assert np.equal(increments, np.array([-1, 0, 0, 0])).all()

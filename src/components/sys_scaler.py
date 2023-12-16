@@ -25,7 +25,7 @@ class SysScaler:
         """
         return self.mcl
     
-    def process_request(self, target_mcl) -> int:
+    def process_request(self, target_mcl) -> tuple:
         """
         Process a scaling request.
     
@@ -35,6 +35,7 @@ class SysScaler:
         """
         deltas, mcl = self.configurator.calculate_configuration(target_mcl)
         if self.total_increment is None:
+            print(f"Qui")
             increments_to_apply = deltas
         else:
             increments_to_apply = deltas - self.total_increment
@@ -49,7 +50,7 @@ class SysScaler:
             self.total_increment += increments_to_apply
 
         self.mcl = mcl
-        return self.mcl
+        return self.mcl, increments_to_apply
 
     def _apply_increment(self, inc_idx) -> None:
         """

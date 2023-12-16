@@ -29,5 +29,3 @@ if __name__ == '__main__':
     scaler = SysScaler(config, 60)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()
-
-
