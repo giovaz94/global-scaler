@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   generateName: sys-pod-virus-scanner-
+  labels:
+    app: virus-scanner
 spec:
   nodeName: k3d-k3s-default-agent-2
   containers:
