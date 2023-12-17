@@ -35,13 +35,11 @@ class SysScaler:
         """
         deltas, mcl = self.configurator.calculate_configuration(target_mcl)
         if self.total_increment is None:
-            print(f"Qui")
             increments_to_apply = deltas
         else:
             increments_to_apply = deltas - self.total_increment
         
         print(f"Increments to apply: {increments_to_apply}")
-        sys.stdout.flush()
         self._apply_increment(increments_to_apply)
 
         if self.total_increment is None:
@@ -49,6 +47,7 @@ class SysScaler:
         else:
             self.total_increment += increments_to_apply
 
+        print(f"Total increments: {self.total_increment}")
         self.mcl = mcl
         return self.mcl, increments_to_apply
 
@@ -75,7 +74,9 @@ class SysScaler:
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
+                            print(pod_manifest)
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
+                            print(f"Deleting pod {image_name} on node {node_name}")
                             delete_pod_by_image(self.k8s_client, image_name, node_name)
     

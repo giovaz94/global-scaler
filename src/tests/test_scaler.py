@@ -218,6 +218,22 @@ def test_minor_scaling(kubernetes_client, standard_sys_scaler, env_configuration
     assert np.equal(increments, np.array([1, 0, 0, 0])).all()
     time.sleep(5)
 
+    _, increments = standard_sys_scaler.process_request(77.2)
+    current_mcl_request = 80
+    configuration = env_configurations[current_mcl_request]
+    _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
+
+    assert np.equal(increments, np.array([0, 0, 0, 0])).all()
+    time.sleep(5)
+
+    _, increments = standard_sys_scaler.process_request(67.2)
+    current_mcl_request = 80
+    configuration = env_configurations[current_mcl_request]
+    _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
+
+    assert np.equal(increments, np.array([0, 0, 0, 0])).all()
+    time.sleep(5)
+
     _, increments = standard_sys_scaler.process_request(0)
     current_mcl_request = 50
     configuration = env_configurations[current_mcl_request]

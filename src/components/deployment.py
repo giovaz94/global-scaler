@@ -50,7 +50,7 @@ def delete_pod(client, pod_name) -> None:
                 break
             time.sleep(1)
     except Exception as e:
-        print(f"Error deleting pod '{pod_name}' in namespace default: {e}")
+        raise Exception(f"Error deleting pod: {e}")
 
 
 def delete_pod_by_image(client, image_name, node_name) -> None:
@@ -62,11 +62,16 @@ def delete_pod_by_image(client, image_name, node_name) -> None:
     -----------
     image_name -> the image name of the pod to delete
     """
-    pods = client.list_pod_for_all_namespaces(watch=False)
-    for pod in pods.items:
-        if pod.spec.containers[0].image == image_name and \
-            pod.spec.node_name == node_name and \
-            pod.status.phase == "Running":
-            pod_name = pod.metadata.name
-            delete_pod(client, pod_name)
-            break
+
+    try:
+        pods = client.list_namespaced_pod("default")
+        for pod in pods.items:
+            if pod.spec.containers[0].image == image_name and \
+                    pod.spec.node_name == node_name and \
+                    pod.status.phase == "Running":
+
+                pod_name = pod.metadata.name
+                delete_pod(client, pod_name)
+                break
+    except Exception as e:
+        raise Exception(f"Error deleting pod: {e}")

@@ -41,29 +41,31 @@ class Guard():
             endpoint = monitor_url + "/inboundWorkload"
             response = requests.get(endpoint).json()
             print(f"Inbound workload registered {response['inbound_workload']}")
-            sys.stdout.flush()
             return response["inbound_workload"]
         else:
             raise Exception("DB_URL not set")
 
-    def should_scale(self) -> bool:
+    def should_scale(self, inbound_workload, current_mcl) -> bool:
         """
         Check the conditions of the system and return True if it should scale.
         """
-        return self.get_inbound_workload() - (self.scaler.get_mcl() - self.k_big) > self.k or \
-            (self.scaler.get_mcl() - self.k_big) - self.get_inbound_workload() > self.k
+        return inbound_workload - (current_mcl - self.k_big) > self.k or \
+            (current_mcl - self.k_big) - inbound_workload > self.k
 
     def guard(self) -> None:
         """
         This method is executed in a separate thread.
         Check the conditions of the system and eventually scale it.
         """
+        print("Monitoring the system...")
         while self.running:
-            print("Monitoring the system...")
-            if self.should_scale():
+            inbound_workload = self.get_inbound_workload()
+            current_mcl = self.scaler.get_mcl()
+            print(f"Current mcl: {current_mcl}")
+            print(f"Inbound workload: {inbound_workload}")
+            if self.should_scale(inbound_workload, current_mcl):
                 print("Scaling the system...")
-                sys.stdout.flush()
-                self.scaler.process_request(self.get_inbound_workload())
+                self.scaler.process_request(inbound_workload)
             time.sleep(self.sleep)
 
     def cleanup_actor(self):
