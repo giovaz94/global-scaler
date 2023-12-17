@@ -68,6 +68,7 @@ def delete_pod_by_image(client, image_name, node_name) -> None:
         for pod in pods.items:
             if pod.spec.containers[0].image == image_name and \
                     pod.spec.node_name == node_name and \
+                    pod.metadata.name.startswith("sys-pod") and \
                     pod.status.phase == "Running":
 
                 pod_name = pod.metadata.name
