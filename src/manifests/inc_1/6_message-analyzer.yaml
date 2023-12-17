@@ -3,9 +3,24 @@ kind: Pod
 metadata:
   generateName: sys-pod-message-analyzer-
   labels:
-      app: message-analyzer
+    app: message-analyzer
 spec:
   nodeName: k3d-k3s-default-agent-1
   containers:
   - name: message-analyzer
     image: giovaz94/message-analyzer-service:development
+    env:
+      - name: HOSTNAME
+        value: "rabbitmq-service"
+      - name: RABBITMQ_USERNAME
+        value: "pipeline_broker"
+      - name: RABBITMQ_PASSWORD
+        value: "p1p3l1n3"
+      - name: RABBITMQ_VHOST
+        value: "pipeline-vhost"
+      - name: QUEUE_NAME
+        value: "imagerec.queue"
+      - name: DB_URL
+        value: "http://monitor-service:3200"
+      - name: MCL
+        value: "270"
