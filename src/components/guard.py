@@ -1,6 +1,7 @@
 import time
 import threading
 import requests
+from retry import retry
 from components.sys_scaler import SysScaler
 import os
 import sys
@@ -31,6 +32,7 @@ class Guard():
         self.running = False
         self.guard_thread.join()
 
+    @retry(ConnectionError, delay=1)
     def get_inbound_workload(self) -> int:
         """
         Return the inbound workload of the system, 

@@ -21,8 +21,8 @@ if __name__ == '__main__':
         [0, 0, 1, 1, 0, 0, 0],  # Increment 4
     ])
 
-    k_big = 10
-    k = 1
+    k_big = 20
+    k = 4
     sleep = 2
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)

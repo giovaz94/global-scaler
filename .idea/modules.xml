@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/gs_impl.iml" filepath="$PROJECT_DIR$/.idea/gs_impl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/global-scaler.iml" filepath="$PROJECT_DIR$/.idea/global-scaler.iml" />
     </modules>
   </component>
 </project>
