@@ -1,13 +1,14 @@
 import time
 import threading
 import requests
-from retry import retry
 from components.sys_scaler import SysScaler
 import os
-import sys
-class Guard():
+
+
+class Guard:
 
     def __init__(self, scaler: SysScaler, k_big: int, k: int, sleep: int = 10):
+        self.guard_thread = None
         self.k_big = k_big
         self.k = k
         self.sleep = sleep
@@ -32,7 +33,7 @@ class Guard():
         self.running = False
         self.guard_thread.join()
 
-    @retry(ConnectionError, delay=1)
+
     def get_inbound_workload(self) -> int:
         """
         Return the inbound workload of the system, 
@@ -41,9 +42,17 @@ class Guard():
         monitor_url = os.environ.get("DB_URL")
         if monitor_url:
             endpoint = monitor_url + "/inboundWorkload"
-            response = requests.get(endpoint).json()
-            print(f"Inbound workload registered {response['inbound_workload']}")
-            return response["inbound_workload"]
+
+            while True:
+                try:
+                    response = requests.get(endpoint)
+                    if response.status_code == 200:
+                        data = response.json()
+                        print(f"Inbound workload registered {data['inbound_workload']}")
+                        return data["inbound_workload"]
+                    time.sleep(1)
+                except Exception as e:
+                    print(f"Error getting inbound workload: {e}")
         else:
             raise Exception("DB_URL not set")
 
@@ -69,11 +78,3 @@ class Guard():
                 print("Scaling the system...")
                 self.scaler.process_request(inbound_workload)
             time.sleep(self.sleep)
-
-    def cleanup_actor(self):
-        """
-        Stop the guard thread and join it.
-        """
-        if self.guard_thread.is_alive():
-            self.running = False
-            self.guard_thread.join()
