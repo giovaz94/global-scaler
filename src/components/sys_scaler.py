@@ -2,14 +2,15 @@ import yaml
 import os
 import sys
 from kubernetes import client, config
-from components.configurator import Configurator
-from components.deployment import deploy_pod, delete_pod_by_image
+from src.components.configurator import Configurator
+from src.components.deployment import deploy_pod, delete_pod_by_image
+
 
 class SysScaler:
     """
     SysScaler class will scale the system to a new configuration.
     """
-    def __init__(self, configurator: Configurator, starting_mcl: int) -> None:
+    def __init__(self, configurator: Configurator, starting_mcl: float) -> None:
         self.mcl = starting_mcl
         self.configurator = configurator
         if os.environ.get("INCLUSTER_CONFIG") == "true":
@@ -19,7 +20,7 @@ class SysScaler:
         self.k8s_client = client.CoreV1Api()
         self.total_increment = None
 
-    def get_mcl(self) -> int:
+    def get_mcl(self) -> float:
         """
         Return the current mcl of the system.
         """

@@ -1,7 +1,8 @@
 import time
 import threading
 import requests
-from components.sys_scaler import SysScaler
+from prometheus_api_client import PrometheusConnect
+from src.components.sys_scaler import SysScaler
 import os
 
 
@@ -26,35 +27,25 @@ class Guard:
         self.guard_thread = threading.Thread(target=self.guard)
         self.guard_thread.start()
 
-    def stop(self) -> None:
-        """
-        Stop the guard process.
-        """
-        self.running = False
-        self.guard_thread.join()
-
-
-    def get_inbound_workload(self) -> int:
+    def get_inbound_workload(self) -> float:
         """
         Return the inbound workload of the system, 
         querying the external monitoring system.
         """
-        monitor_url = os.environ.get("DB_URL")
-        if monitor_url:
-            endpoint = monitor_url + "/inboundWorkload"
+        prometheus_service_address = os.environ.get("PROMETHEUS_SERVICE_ADDRESS", "localhost")
+        prometheus_service_port = os.environ.get("PROMETHEUS_SERVICE_PORT", "9090")
+        prometheus_url = f"http://{prometheus_service_address}:{prometheus_service_port}"
+        query = "rate(http_requests_total_entrypoint[10s])"
+        try:
+            prom = PrometheusConnect(url=prometheus_url)
+            data = prom.custom_query(query)
 
-            while True:
-                try:
-                    response = requests.get(endpoint)
-                    if response.status_code == 200:
-                        data = response.json()
-                        print(f"Inbound workload registered {data['inbound_workload']}")
-                        return data["inbound_workload"]
-                    time.sleep(1)
-                except Exception as e:
-                    print(f"Error getting inbound workload: {e}")
-        else:
-            raise Exception("DB_URL not set")
+            metric_value = data[0]['value'][1]  # Assuming there's only one result
+
+            return float(metric_value)
+        except (requests.exceptions.RequestException, KeyError, IndexError) as e:
+            print("Error:", e)
+
 
     def should_scale(self, inbound_workload, current_mcl) -> bool:
         """

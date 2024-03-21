@@ -27,6 +27,6 @@ if __name__ == '__main__':
     sleep = int(os.environ.get("SLEEP", "2"))
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
-    scaler = SysScaler(config, 60)
+    scaler = SysScaler(config, 26.6)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()

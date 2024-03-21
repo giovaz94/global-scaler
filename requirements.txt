@@ -2,6 +2,7 @@ pytest
 pykka
 gevent
 autopep8
+prometheus-api-client
 numpy
 kubernetes
 requests

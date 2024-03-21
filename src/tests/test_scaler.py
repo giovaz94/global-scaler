@@ -7,7 +7,7 @@ import time
 
 from kubernetes.client.rest import ApiException
 from kubernetes import client, config
-from components.deployment import deploy_pod, delete_pod
+from src.components.deployment import deploy_pod, delete_pod
 
 
 @pytest.fixture
@@ -16,37 +16,37 @@ def env_configurations():
         50 : {
             "mcl" : 60,
             "nodes" : {
-                "k3d-k3s-default-agent-0" : [
+                "k3d-k3s-default-agent-0": [
                     ("giovaz94/virus-scanner-service:development", 1),
                     ("giovaz94/attachment-manager-service:development", 1),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-1" : [
+                "k3d-k3s-default-agent-1": [
                     ("giovaz94/parser-service:development", 1),
                     ("giovaz94/image-analyzer-service:development", 1),
                     ("giovaz94/message-analyzer-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-2" : []
+                "k3d-k3s-default-agent-2": []
             },
         },
         80 : {
             "mcl" : 110,
             "nodes" : {
-                "k3d-k3s-default-agent-0" : [
+                "k3d-k3s-default-agent-0": [
                     ("giovaz94/virus-scanner-service:development", 1),
                     ("giovaz94/attachment-manager-service:development", 1),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-1" : [
+                "k3d-k3s-default-agent-1": [
                     ("giovaz94/parser-service:development", 1),
                     ("giovaz94/image-analyzer-service:development", 1),
                     ("giovaz94/message-analyzer-service:development", 2),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-2" : [
+                "k3d-k3s-default-agent-2": [
                     ("giovaz94/virus-scanner-service:development", 1),
                 ]
             },
@@ -54,20 +54,20 @@ def env_configurations():
         110 : {
             "mcl" : 120,
             "nodes" : {
-                "k3d-k3s-default-agent-0" : [
+                "k3d-k3s-default-agent-0": [
                     ("giovaz94/virus-scanner-service:development", 1),
                     ("giovaz94/attachment-manager-service:development", 1),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-1" : [
+                "k3d-k3s-default-agent-1": [
                     ("giovaz94/parser-service:development", 1),
                     ("giovaz94/image-analyzer-service:development", 1),
                     ("giovaz94/message-analyzer-service:development", 2),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-2" : [
+                "k3d-k3s-default-agent-2": [
                     ("giovaz94/virus-scanner-service:development", 1),
                     ("giovaz94/parser-service:development", 1),
                 ]
@@ -76,42 +76,42 @@ def env_configurations():
         120 : {
             "mcl" : 154,
             "nodes" : {
-                "k3d-k3s-default-agent-0" : [
+                "k3d-k3s-default-agent-0": [
                     ("giovaz94/virus-scanner-service:development", 1),
                     ("giovaz94/attachment-manager-service:development", 1),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-1" : [
+                "k3d-k3s-default-agent-1": [
                     ("giovaz94/parser-service:development", 1),
                     ("giovaz94/image-analyzer-service:development", 1),
                     ("giovaz94/message-analyzer-service:development", 3),
                     ("giovaz94/image-recognizer-service:development", 2),
                     ("giovaz94/nsfw-detector-service:development", 2),
                 ],
-                "k3d-k3s-default-agent-2" : [
+                "k3d-k3s-default-agent-2": [
                     ("giovaz94/virus-scanner-service:development", 2),
                     ("giovaz94/parser-service:development", 1),
                 ]
             },
         },
-        154 : {
-            "mcl" : 180,
-            "nodes" : {
-                "k3d-k3s-default-agent-0" : [
+        154: {
+            "mcl": 180,
+            "nodes": {
+                "k3d-k3s-default-agent-0": [
                     ("giovaz94/virus-scanner-service:development", 1),
                     ("giovaz94/attachment-manager-service:development", 1),
                     ("giovaz94/image-recognizer-service:development", 1),
                     ("giovaz94/nsfw-detector-service:development", 1),
                 ],
-                "k3d-k3s-default-agent-1" : [
+                "k3d-k3s-default-agent-1": [
                     ("giovaz94/parser-service:development", 1),
                     ("giovaz94/image-analyzer-service:development", 1),
                     ("giovaz94/message-analyzer-service:development", 3),
                     ("giovaz94/image-recognizer-service:development", 2),
                     ("giovaz94/nsfw-detector-service:development", 2),
                 ],
-                "k3d-k3s-default-agent-2" : [
+                "k3d-k3s-default-agent-2": [
                     ("giovaz94/virus-scanner-service:development", 2),
                     ("giovaz94/parser-service:development", 1),
                     ("giovaz94/attachment-manager-service:development", 1),
@@ -173,6 +173,7 @@ def _get_status(client):
         node.metadata.name for node in client.list_node().items
         if "node-role.kubernetes.io/control-plane" not in node.metadata.labels
     ]}
+    print(status)
     for pod in pods.items:
         image_name = pod.spec.containers[0].image
         found = False
