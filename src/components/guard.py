@@ -2,7 +2,7 @@ import time
 import threading
 import requests
 from prometheus_api_client import PrometheusConnect
-from src.components.sys_scaler import SysScaler
+from components.sys_scaler import SysScaler
 import os
 
 
@@ -46,7 +46,6 @@ class Guard:
         except (requests.exceptions.RequestException, KeyError, IndexError) as e:
             print("Error:", e)
 
-
     def should_scale(self, inbound_workload, current_mcl) -> bool:
         """
         Check the conditions of the system and return True if it should scale.
@@ -63,8 +62,8 @@ class Guard:
         while self.running:
             inbound_workload = self.get_inbound_workload()
             current_mcl = self.scaler.get_mcl()
-            print(f"Current mcl: {current_mcl}")
-            print(f"Inbound workload: {inbound_workload}")
+            print(f"Current mcl: {current_mcl}", flush=True)
+            print(f"Inbound workload: {inbound_workload}", flush=True)
             if self.should_scale(inbound_workload, current_mcl):
                 print("Scaling the system...")
                 self.scaler.process_request(inbound_workload)

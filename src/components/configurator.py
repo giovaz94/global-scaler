@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Configurator:
     """
     The following class is in charge of calculate the new configuration 
