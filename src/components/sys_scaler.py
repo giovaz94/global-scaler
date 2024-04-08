@@ -2,8 +2,8 @@ import yaml
 import os
 
 from kubernetes import client, config
-from src.components.configurator import Configurator
-from src.components.deployment import deploy_pod, delete_pod_by_image
+from components.configurator import Configurator
+from components.deployment import deploy_pod, delete_pod_by_image
 
 
 class SysScaler:

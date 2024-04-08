@@ -7,7 +7,7 @@ import time
 
 from kubernetes.client.rest import ApiException
 from kubernetes import client, config
-from src.components.deployment import deploy_pod, delete_pod
+from components.deployment import deploy_pod, delete_pod
 
 
 @pytest.fixture
