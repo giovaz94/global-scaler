@@ -1,13 +1,12 @@
 import os
 
 import numpy as np
-import yaml
 import pytest
 import time
 
 from kubernetes.client.rest import ApiException
 from kubernetes import client, config
-from components.deployment import deploy_pod, delete_pod
+from src.components.deployment import deploy_pod, delete_pod
 
 
 @pytest.fixture

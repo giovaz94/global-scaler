@@ -2,8 +2,8 @@ import time
 import threading
 import requests
 from prometheus_api_client import PrometheusConnect
-from components.sys_scaler import SysScaler
-from components.logger import Logger
+from src.components.sys_scaler import SysScaler
+from src.components.logger import Logger
 
 import os
 

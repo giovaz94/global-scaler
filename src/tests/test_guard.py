@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch, create_autospec
-from components.guard import Guard
-from components.sys_scaler import SysScaler
+from src.components.guard import Guard
+from src.components.sys_scaler import SysScaler
 
 @pytest.fixture
 def mock_scaler():
