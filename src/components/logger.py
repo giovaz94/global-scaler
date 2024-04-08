@@ -31,15 +31,13 @@ class Logger:
         while True:
             inbound_workload = self._execute_prometheus_query("rate(http_requests_total_entrypoint[10s])")
             message_loss = self._execute_prometheus_query("sum(services_message_lost)")
+            number_of_instances_deployed = self._execute_prometheus_query("deployed_pods")
             latency = self._execute_prometheus_query(
                 "sum(http_response_time_sum) / sum(message_analyzer_complete_message)"
             )
-            print(
-                f"Workload: {inbound_workload}, Message loss: {message_loss}, Latency: {latency}",
-                flush=True
-            )
+
             with open('log.csv', 'a', newline='') as csv_file:
                 csv_writer = csv.writer(csv_file)
-                csv_writer.writerow([iteration * self.sleep, inbound_workload, message_loss, latency])
+                csv_writer.writerow([iteration * self.sleep, inbound_workload, message_loss, latency, number_of_instances_deployed])
             iteration += 1
             time.sleep(self.sleep)

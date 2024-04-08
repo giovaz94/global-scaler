@@ -1,7 +1,6 @@
 import time
 import threading
 import requests
-import csv
 from prometheus_api_client import PrometheusConnect
 from components.sys_scaler import SysScaler
 from components.logger import Logger
@@ -32,12 +31,15 @@ class Guard:
         Start the guard process.
         This method will start a new thread that will query the monitor service in order
         to try to check the conditions of the system.
+
+        A second thread will be started to log the metrics of the system.
         """
         self.guard_thread = threading.Thread(target=self.guard)
         self.log_thread = threading.Thread(target=self.logger.log)
 
         self.guard_thread.start()
         self.log_thread.start()
+
     def get_inbound_workload(self) -> float:
         """
         Return the inbound workload of the system, 

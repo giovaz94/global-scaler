@@ -4,6 +4,8 @@ import os
 from components.configurator import Configurator
 from components.sys_scaler import SysScaler
 from components.guard import Guard
+from prometheus_client import start_http_server
+
 
 if __name__ == '__main__':
 
@@ -30,3 +32,6 @@ if __name__ == '__main__':
     scaler = SysScaler(config, 26.6)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()
+
+    print("Exposing prometheus metrics on port 8000...")
+    start_http_server(5000)
