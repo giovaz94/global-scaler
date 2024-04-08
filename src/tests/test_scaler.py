@@ -7,7 +7,7 @@ import time
 
 from kubernetes.client.rest import ApiException
 from kubernetes import client, config
-from components.deployment import deploy_pod, delete_pod
+from src.components.deployment import deploy_pod, delete_pod
 
 
 @pytest.fixture
@@ -150,7 +150,7 @@ def _delete_all_pods(client):
    """
    pod_list = client.list_namespaced_pod("default")
    for pod in pod_list.items:
-        delete_pod(client, pod.metadata.name)
+        delete_pod(client, pod.metadata.name, await_deletion=True)
 
 def _startup_base_services(client):
     """
@@ -160,7 +160,7 @@ def _startup_base_services(client):
     manifest_files = os.listdir(base_manifest_path)
     for file in manifest_files:
         try:
-            deploy_pod(client, os.path.join(base_manifest_path, file))                
+            deploy_pod(client, os.path.join(base_manifest_path, file), await_running=True)
         except ApiException as e:
             raise Exception(f"Error deploying pod: {e}")
 
@@ -188,7 +188,7 @@ def _get_status(client):
 
 def _check_configuration(kubernetes_client, scaler, current_mcl_request, configuration):
     system_mcl = configuration["mcl"]
-    mcl, _ = scaler.process_request(current_mcl_request)
+    mcl, _ = scaler.process_request(current_mcl_request, await_deployment=True)
     assert mcl == system_mcl
     actual_status = _get_status(kubernetes_client)
     for node_name, expected_pods in configuration["nodes"].items():
@@ -208,10 +208,10 @@ def test_scale_down(kubernetes_client, standard_sys_scaler, env_configurations):
         _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
 
 def test_minor_scaling(kubernetes_client, standard_sys_scaler, env_configurations):
-    _, increments = standard_sys_scaler.process_request(0)
+    _, increments = standard_sys_scaler.process_request(0, await_deployment=True)
     assert np.equal(increments, np.array([0, 0, 0, 0])).all()
 
-    _, increments = standard_sys_scaler.process_request(88.3)
+    _, increments = standard_sys_scaler.process_request(88.3, await_deployment=True)
     current_mcl_request = 80
     configuration = env_configurations[current_mcl_request]
     _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
@@ -219,7 +219,7 @@ def test_minor_scaling(kubernetes_client, standard_sys_scaler, env_configuration
     assert np.equal(increments, np.array([1, 0, 0, 0])).all()
     time.sleep(5)
 
-    _, increments = standard_sys_scaler.process_request(77.2)
+    _, increments = standard_sys_scaler.process_request(77.2, await_deployment=True)
     current_mcl_request = 80
     configuration = env_configurations[current_mcl_request]
     _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
@@ -227,7 +227,7 @@ def test_minor_scaling(kubernetes_client, standard_sys_scaler, env_configuration
     assert np.equal(increments, np.array([0, 0, 0, 0])).all()
     time.sleep(5)
 
-    _, increments = standard_sys_scaler.process_request(67.2)
+    _, increments = standard_sys_scaler.process_request(67.2, await_deployment=True)
     current_mcl_request = 80
     configuration = env_configurations[current_mcl_request]
     _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)
@@ -235,7 +235,7 @@ def test_minor_scaling(kubernetes_client, standard_sys_scaler, env_configuration
     assert np.equal(increments, np.array([0, 0, 0, 0])).all()
     time.sleep(5)
 
-    _, increments = standard_sys_scaler.process_request(0)
+    _, increments = standard_sys_scaler.process_request(0, await_deployment=True)
     current_mcl_request = 50
     configuration = env_configurations[current_mcl_request]
     _check_configuration(kubernetes_client, standard_sys_scaler, current_mcl_request, configuration)

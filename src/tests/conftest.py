@@ -1,9 +1,9 @@
 import pytest
 import numpy as np
 
-from components.configurator import Configurator
-from components.sys_scaler import SysScaler
-from components.guard import Guard
+from src.components.configurator import Configurator
+from src.components.sys_scaler import SysScaler
+from src.components.guard import Guard
 
 @pytest.fixture()
 def standard_configurator():

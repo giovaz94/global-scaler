@@ -2,8 +2,8 @@ import yaml
 import os
 
 from kubernetes import client, config
-from components.configurator import Configurator
-from components.deployment import deploy_pod, delete_pod_by_image
+from src.components.configurator import Configurator
+from src.components.deployment import deploy_pod, delete_pod_by_image
 
 
 class SysScaler:
@@ -26,7 +26,7 @@ class SysScaler:
         """
         return self.mcl
     
-    def process_request(self, target_mcl) -> tuple:
+    def process_request(self, target_mcl, await_deployment=False) -> tuple:
         """
         Process a scaling request.
     
@@ -41,7 +41,7 @@ class SysScaler:
             increments_to_apply = deltas - self.total_increment
         
         print(f"Increments to apply: {increments_to_apply}")
-        self._apply_increment(increments_to_apply)
+        self._apply_increment(increments_to_apply, await_deployment)
 
         if self.total_increment is None:
             self.total_increment = increments_to_apply
@@ -52,7 +52,7 @@ class SysScaler:
         self.mcl = mcl
         return self.mcl, increments_to_apply
 
-    def _apply_increment(self, inc_idx) -> None:
+    def _apply_increment(self, inc_idx, await_operation=False) -> None:
         """
         Apply the configuration to the cluster.
 
@@ -71,7 +71,7 @@ class SysScaler:
             for _ in range(iter_number):
                 for file in manifest_files:
                     if num > 0:
-                        deploy_pod(self.k8s_client, os.path.join(manifest_path, file))
+                        deploy_pod(self.k8s_client, os.path.join(manifest_path, file), await_operation)
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
@@ -79,5 +79,5 @@ class SysScaler:
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
                             print(f"Deleting pod {image_name} on node {node_name}")
-                            delete_pod_by_image(self.k8s_client, image_name, node_name)
+                            delete_pod_by_image(self.k8s_client, image_name, node_name, await_operation)
     
