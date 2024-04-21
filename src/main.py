@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     k_big = int(os.environ.get("K_BIG", "10"))
     k = int(os.environ.get("K", "1"))
-    sleep = int(os.environ.get("SLEEP", "2"))
+    sleep = int(os.environ.get("SLEEP", "10"))
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
     scaler = SysScaler(config, 26.6)

@@ -2,8 +2,8 @@ import yaml
 import os
 
 from kubernetes import client, config
-from src.components.configurator import Configurator
-from src.components.deployment import deploy_pod, delete_pod_by_image
+from components.configurator import (Configurator)
+from components.deployment import deploy_pod, delete_pod_by_image
 
 
 class SysScaler:
@@ -75,9 +75,7 @@ class SysScaler:
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
-                            print(pod_manifest)
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
-                            print(f"Deleting pod {image_name} on node {node_name}")
                             delete_pod_by_image(self.k8s_client, image_name, node_name, await_operation)
     

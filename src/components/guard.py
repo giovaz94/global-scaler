@@ -1,9 +1,11 @@
 import time
 import threading
+from datetime import datetime, timedelta
+
 import requests
 from prometheus_api_client import PrometheusConnect
-from src.components.sys_scaler import SysScaler
-from src.components.logger import Logger
+from components.sys_scaler import SysScaler
+from components.logger import Logger
 
 import os
 
@@ -48,8 +50,8 @@ class Guard:
         query = "rate(http_requests_total_entrypoint[10s])"
         try:
             data = self.prometheus_instance.custom_query(query)
+            print(data[0]['value'][1])
             metric_value = data[0]['value'][1]
-
             return float(metric_value)
         except (requests.exceptions.RequestException, KeyError, IndexError) as e:
             print("Error:", e)
@@ -69,9 +71,10 @@ class Guard:
         print("Monitoring the system...")
         while self.running:
             inbound_workload = self.get_inbound_workload()
+            if inbound_workload is None:
+                continue
+
             current_mcl = self.scaler.get_mcl()
-            print(f"Current mcl: {current_mcl}", flush=True)
-            print(f"Inbound workload: {inbound_workload}", flush=True)
             if self.should_scale(inbound_workload, current_mcl):
                 self.scaler.process_request(inbound_workload)
             time.sleep(self.sleep)

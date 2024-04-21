@@ -19,7 +19,6 @@ def deploy_pod(client, manifest_file_path, await_running=False) -> None:
     try:
         with open(manifest_file_path, 'r') as manifest_file:
             pod_manifest = yaml.safe_load(manifest_file)
-            pod_image = pod_manifest["spec"]["containers"][0]["image"].split(":")[0]
             pod = client.create_namespaced_pod(body=pod_manifest, namespace="default")
             pod_name = pod.metadata.name
             if await_running:
@@ -71,8 +70,7 @@ def delete_pod_by_image(client, image_name, node_name, await_deletion=False) -> 
         for pod in pods.items:
             if pod.spec.containers[0].image == image_name and \
                     pod.spec.node_name == node_name and \
-                    pod.metadata.name.startswith("sys-pod") and \
-                    pod.status.phase == "Running":
+                    pod.metadata.name.startswith("sys-pod"):
 
                 pod_name = pod.metadata.name
                 delete_pod(client, pod_name, await_deletion)
