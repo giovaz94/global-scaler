@@ -30,7 +30,7 @@ class Logger:
         iteration = 0
         while True:
             inbound_workload = self._execute_prometheus_query("rate(http_requests_total_entrypoint[10s])")
-            message_loss = self._execute_prometheus_query("sum_over_time(services_message_lost[10s])")
+            message_loss = self._execute_prometheus_query("sum(rate(services_message_lost[10s]))")
             complete_message = self._execute_prometheus_query("sum_over_time(message_analyzer_complete_message[10s])")
             number_of_instances_deployed = self._execute_prometheus_query("sum(deployed_pods)")
             latency = self._execute_prometheus_query(

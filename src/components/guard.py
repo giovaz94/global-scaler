@@ -1,11 +1,8 @@
 import time
 import threading
-from datetime import datetime, timedelta
 
 import requests
-from prometheus_api_client import PrometheusConnect
 from components.sys_scaler import SysScaler
-from components.logger import Logger
 
 import os
 
@@ -26,8 +23,6 @@ class Guard:
         prometheus_service_address = os.environ.get("PROMETHEUS_SERVICE_ADDRESS", "localhost")
         prometheus_service_port = os.environ.get("PROMETHEUS_SERVICE_PORT", "8080")
         prometheus_url = f"http://{prometheus_service_address}:{prometheus_service_port}"
-        self.prometheus_instance = PrometheusConnect(url=prometheus_url)
-        self.logger = Logger(self.prometheus_instance, sleep)
     def start(self) -> None:
         """
         Start the guard process.
@@ -37,10 +32,7 @@ class Guard:
         A second thread will be started to log the metrics of the system.
         """
         self.guard_thread = threading.Thread(target=self.guard)
-        self.log_thread = threading.Thread(target=self.logger.log)
-
         self.guard_thread.start()
-        self.log_thread.start()
 
     def get_inbound_workload(self) -> float:
         """
