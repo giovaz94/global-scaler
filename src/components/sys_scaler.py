@@ -3,7 +3,8 @@ import os
 
 from kubernetes import client, config
 from components.configurator import (Configurator)
-from components.deployment import deploy_pod, delete_pod_by_image
+from components.deployment import deploy_pod, delete_pod_by_image, delete_pod
+import threading
 
 
 class SysScaler:
@@ -68,14 +69,41 @@ class SysScaler:
             manifest_files = os.listdir(manifest_path)
             num = int(inc_idx[i])
             iter_number = abs(num)
-            for _ in range(iter_number):
-                for file in manifest_files:
-                    if num > 0:
-                        deploy_pod(self.k8s_client, os.path.join(manifest_path, file), await_operation)
-                    else:
+
+            if num > 0:
+                for _ in range(iter_number):
+                    files = [os.path.join(manifest_path, file) for file in manifest_files]
+                    threading.Thread(target=self.__apply_thread, args=(files,)).start()
+            else:
+                found_pods = []
+                pods = self.k8s_client.list_namespaced_pod("default")
+
+                for _ in range(iter_number):
+                    for file in manifest_files:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
-                            delete_pod_by_image(self.k8s_client, image_name, node_name, await_operation)
-    
+                            try:
+                                for pod in pods.items:
+                                    found_pod_name = pod.metadata.name
+                                    if (pod.spec.containers[0].image == image_name and
+                                            pod.spec.node_name == node_name and
+                                            found_pod_name not in found_pods and
+                                            pod.metadata.name.startswith("sys-pod")):
+
+                                        found_pods.append(found_pod_name)
+                            except Exception as e:
+                                raise Exception(f"Error deleting pod: {e}")
+
+                            threading.Thread(target=self.__remove_thread, args=(found_pods,)).start()
+
+    def __apply_thread(self, file_list):
+        for file in file_list:
+            deploy_pod(self.k8s_client, file, False)
+        return
+
+    def __remove_thread(self, pod_name_list):
+        for pod_name in pod_name_list:
+            delete_pod(self.k8s_client, pod_name, False)
+        return

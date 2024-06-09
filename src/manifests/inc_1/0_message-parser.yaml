@@ -1,14 +1,12 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  generateName: sys-pod-nsfw-detector-
-  labels:
-    app: nsfw-detector
+  generateName: sys-pod-message-parser-
 spec:
-  nodeName: testing-cluster-pool-rjxyo
+  nodeName: testing-cluster-pool-rjxyb
   containers:
-  - name: nsfw-detector
-    image: giovaz94/nsfw-detector-service:development
+  - name: parser
+    image: giovaz94/parser-service:development
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
@@ -19,7 +17,7 @@ spec:
       - name: RABBITMQ_VHOST
         value: "pipeline-vhost"
       - name: QUEUE_NAME
-        value: "nsfwdet.queue"
+        value: "parser.queue"
       - name: DB_URL
         value: "http://monitor-service:3200"
       - name: MCL

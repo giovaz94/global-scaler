@@ -1,12 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  generateName: sys-pod-parser-
+  generateName: sys-pod-message-analyzer-
+  labels:
+    app: message-analyzer
 spec:
-  nodeName: k3d-k3s-default-agent-2
+  nodeName: testing-cluster-pool-rjxyr
   containers:
-  - name: parser
-    image: giovaz94/parser-service:development
+  - name: message-analyzer
+    image: giovaz94/message-analyzer-service:development
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
@@ -17,8 +19,8 @@ spec:
       - name: RABBITMQ_VHOST
         value: "pipeline-vhost"
       - name: QUEUE_NAME
-        value: "parser.queue"
+        value: "imagerec.queue"
       - name: DB_URL
         value: "http://monitor-service:3200"
       - name: MCL
-        value: "110"
+        value: "300"

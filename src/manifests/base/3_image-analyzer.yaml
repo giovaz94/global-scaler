@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   generateName: sys-pod-image-analyzer-
 spec:
-  nodeName: k3d-k3s-default-agent-1
+  nodeName: testing-cluster-pool-rjxyb
   containers:
   - name: image-analyzer
     image: giovaz94/image-analyzer-service:development

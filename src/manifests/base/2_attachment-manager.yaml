@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   generateName: sys-pod-attachment-manager-
 spec:
-  nodeName: k3d-k3s-default-agent-0
+  nodeName: testing-cluster-pool-rjxyb
   containers:
   - name: attachment-manager
     image: giovaz94/attachment-manager-service:development

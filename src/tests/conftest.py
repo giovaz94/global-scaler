@@ -26,7 +26,7 @@ def standard_configurator():
 
     # Microservices MCL and MF
     microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 300])
-    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 1])    
+    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 5])
 
     # Replicas for each increment
     scale_config = np.array([

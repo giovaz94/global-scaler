@@ -13,8 +13,8 @@ if __name__ == '__main__':
     base = np.array([1, 1, 1, 1, 1, 1, 1])
 
     # Microservices MCL and MF
-    microservices_mcl = np.array([70, 80, 181, 181, 40, 40, 250])
-    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 1])    
+    microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 300])
+    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 5])   
 
     # Replicas for each increment
     scale_config = np.array([
@@ -29,9 +29,8 @@ if __name__ == '__main__':
     sleep = int(os.environ.get("SLEEP", "10"))
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
-    scaler = SysScaler(config, 26.6)
+    scaler = SysScaler(config, 60)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()
 
-    print("Exposing prometheus metrics on port 8000...")
     start_http_server(5000)

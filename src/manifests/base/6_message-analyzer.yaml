@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   generateName: sys-pod-message-analyzer-
 spec:
-  nodeName: k3d-k3s-default-agent-1
+  nodeName: testing-cluster-pool-rjxyb
   containers:
   - name: message-analyzer
     image: giovaz94/message-analyzer-service:development

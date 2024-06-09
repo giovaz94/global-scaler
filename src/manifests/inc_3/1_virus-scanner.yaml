@@ -2,8 +2,10 @@ apiVersion: v1
 kind: Pod
 metadata:
   generateName: sys-pod-virus-scanner-
+  labels:
+    app: virus-scanner
 spec:
-  nodeName: k3d-k3s-default-agent-2
+  nodeName: testing-cluster-pool-rjxyo
   containers:
   - name: virus-scanner
     image: giovaz94/virus-scanner-service:development
@@ -22,3 +24,5 @@ spec:
         value: "http://monitor-service:3200"
       - name: MCL
         value: "120"
+   
+    
