@@ -11,7 +11,7 @@ from prometheus_api_client import PrometheusConnect
 
 class Guard:
 
-    def __init__(self, scaler: SysScaler, k_big: int, k: int, sleep: int = 10):
+    def __init__(self, scaler: SysScaler, k_big: int, k: int, sleep: int = 2):
         self.guard_thread = None
 
         self.log_thread = None
@@ -44,7 +44,7 @@ class Guard:
         Return the inbound workload of the system, 
         querying the external monitoring system.
         """
-        query = "rate(http_requests_total_entrypoint[10s])"
+        query = "rate(envoy_http_downstream_rq_total{envoy_http_conn_manager_prefix=\"ingress_http\"}[2s])"
         try:
             data = self.prometheus_instance.custom_query(query)
             print(data[0]['value'][1], flush=True)

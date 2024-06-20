@@ -2,10 +2,7 @@ import yaml
 import time
 import os
 from kubernetes.client.rest import ApiException
-from prometheus_client import Gauge
 
-DB_URL = os.environ.get("DB_URL")
-deployed_pods_gauge = Gauge('deployed_pods', 'Number of deployed pods')
 
 def deploy_pod(client, manifest_file_path, await_running=False) -> None:
     """
@@ -26,7 +23,6 @@ def deploy_pod(client, manifest_file_path, await_running=False) -> None:
                     if pod_info.status.phase == 'Running':
                         break
                 time.sleep(1)
-            deployed_pods_gauge.inc()
     except ApiException as e:
         raise Exception(f"Error deploying pod: {e}")
 
@@ -50,7 +46,6 @@ def delete_pod(client, pod_name, await_deletion=False) -> None:
                         print(f"Pod {pod_name} successfully deleted.")
                         break
                 time.sleep(1)
-        deployed_pods_gauge.dec()
     except ApiException as e:
         if e.status == 404:
             print(f"Pod {pod_name} not found.")

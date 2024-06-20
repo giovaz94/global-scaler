@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   generateName: sys-pod-parser-
 spec:
-  nodeName: testing-cluster-pool-rjxyr
+  nodeName: testing-cluster-pool-rgz07
   containers:
   - name: parser
     image: giovaz94/parser-service:development

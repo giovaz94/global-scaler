@@ -53,7 +53,7 @@ class SysScaler:
         self.mcl = mcl
         return self.mcl, increments_to_apply
 
-    def _apply_increment(self, inc_idx, await_operation=False) -> None:
+    def _apply_increment(self, inc_idx) -> None:
         """
         Apply the configuration to the cluster.
 
