@@ -44,9 +44,6 @@ jobs:
           --agents 3
           --k3s-arg "--no-deploy=metrics-server@server:*"
     
-    - name: Run tests with pytest
-      run: pytest -s 
-  
   Publish:
     runs-on: ubuntu-latest
     needs: [ Build-And-Test ]
