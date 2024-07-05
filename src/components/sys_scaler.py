@@ -42,7 +42,7 @@ class SysScaler:
             increments_to_apply = deltas - self.total_increment
         
         print(f"Increments to apply: {increments_to_apply}")
-        self._apply_increment(increments_to_apply, await_deployment)
+        self._apply_increment(increments_to_apply)
 
         if self.total_increment is None:
             self.total_increment = increments_to_apply
