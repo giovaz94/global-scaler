@@ -56,7 +56,7 @@ class Guard:
             data = self.prometheus_instance.custom_query(query)
             metric_value = float(data[0]['value'][1])
             if metric_value is not None and metric_value > 0:
-                self.__sampling_list.append(float(self.__sampling_list))
+                self.__sampling_list.append(float(metric_value))
                 print(f"Sample collected: {self.__sampling_list}", flush=True)
             else:
                 print(f"Value is {metric_value}", flush=True)
