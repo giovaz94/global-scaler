@@ -54,9 +54,10 @@ class Guard:
         query = f"sum(increase(http_requests_total_parser[{self.sleep}s]))"
         try:
             data = self.prometheus_instance.custom_query(query)
-            print(data[0]['value'][1], flush=True)
-            metric_value = data[0]['value'][1]
-            self.__sampling_list.append(float(metric_value))
+            metric_value = float(data[0]['value'][1])
+            if metric_value is not None:
+                self.__sampling_list.append(float(metric_value))
+            
         except (requests.exceptions.RequestException, KeyError, IndexError) as e:
             print("Error:", e, flush=True)
 
