@@ -52,6 +52,7 @@ class Guard:
         querying the external monitoring system.
         """
         query = f"sum(increase(http_requests_total_parser[{self.sleep}s]))"
+        print(f"Querying: {query}", flush=True)
         try:
             data = self.prometheus_instance.custom_query(query)
             metric_value = float(data[0]['value'][1])
