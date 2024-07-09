@@ -83,7 +83,7 @@ class Guard:
             if len(self.__sampling_list) < self.samplings:
                 time.sleep(self.sleep)
                 continue
-            inbound_workload = sum(self.__sampling_list) / (len(self.__sampling_list) * self.samplings)
+            inbound_workload = sum(self.__sampling_list) / (self.sleep * self.samplings)
             self.__sampling_list = []
             print(f"Inbound workload: {inbound_workload}", flush=True)
 
