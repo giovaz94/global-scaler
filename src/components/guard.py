@@ -1,11 +1,8 @@
+import os
 import time
 import threading
-
 import requests
 from components.sys_scaler import SysScaler
-
-import os
-
 from prometheus_api_client import PrometheusConnect
 
 

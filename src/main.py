@@ -12,7 +12,7 @@ if __name__ == '__main__':
     base = np.array([1, 1, 1, 1, 1, 1, 1])
 
     # Microservices MCL and MF
-    microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 300])
+    microservices_mcl = np.array([22, 24, 46.2, 46.2, 18, 18, 60])
     microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 5])   
 
     # Replicas for each increment
@@ -28,6 +28,6 @@ if __name__ == '__main__':
     sleep = int(os.environ.get("SLEEP", "100"))
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
-    scaler = SysScaler(config, 60)
+    scaler = SysScaler(config, 12.0)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()
