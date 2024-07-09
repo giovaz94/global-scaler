@@ -68,53 +68,14 @@ def delete_pod_by_image(client, image_name, node_name, await_deletion=False) -> 
     try:
         pods = client.list_namespaced_pod("default")
         for pod in pods.items:
-            found_pod_name = pod.metadata.name
-            if (pod.spec.containers[0].image == image_name and
-                pod.spec.node_name == node_name and
-                    pod.metadata.name.startswith("sys-pod")):
-
-                found_node_name = pod.spec.node_name
-
-                print(f"Deleting Pod {found_pod_name} on node {found_node_name} exists.")
-                if not pod_exists(client, found_pod_name) and check_if_similar_pod_exists(client, image_name, node_name):
-                    delete_pod_by_image(client, image_name, node_name, await_deletion)
-
+            if (
+                    pod.spec.containers[0].image == image_name and
+                    pod.spec.node_name == node_name and
+                    pod.metadata.name.startswith("sys-pod") and
+                    pod.metadata.deletion_timestamp is None
+            ):
+                found_pod_name = pod.metadata.name
                 delete_pod(client, found_pod_name, await_deletion)
                 break
     except Exception as e:
         raise Exception(f"Error deleting pod: {e}")
-
-
-def pod_exists(client, pod_name):
-    """
-    Check if a pod exists in the cluster.
-
-    Arguments
-    -----------
-    image_name -> the image name of the pod to delete
-    """
-    try:
-        client.read_namespaced_pod(name=pod_name, namespace="default")
-        return True
-    except ApiException as e:
-        if e.status == 404:
-            return False
-        else:
-            raise
-
-
-def check_if_similar_pod_exists(client, image_name, node_name):
-    """
-    Check if a similar pod exists in the cluster.
-
-    Arguments
-    -----------
-    image_name -> the image name of the pod to delete
-    """
-    pods = client.list_namespaced_pod("default")
-    for pod in pods.items:
-        if (pod.spec.containers[0].image == image_name and
-            pod.spec.node_name == node_name and
-                pod.metadata.name.startswith("sys-pod")):
-            return True
-    return False
