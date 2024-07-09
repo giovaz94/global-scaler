@@ -55,9 +55,12 @@ class Guard:
         try:
             data = self.prometheus_instance.custom_query(query)
             metric_value = float(data[0]['value'][1])
-            if metric_value is not None:
+            if metric_value is not None and metric_value > 0:
                 self.__sampling_list.append(float(metric_value))
-            
+                print(f"Sample collected: {metric_value}", flush=True)
+            else:
+                print(f"Value is {metric_value}", flush=True)
+                
         except (requests.exceptions.RequestException, KeyError, IndexError) as e:
             print("Error:", e, flush=True)
 
@@ -81,6 +84,9 @@ class Guard:
                 time.sleep(self.sleep)
                 continue
             inbound_workload = sum(self.__sampling_list) / (len(self.__sampling_list) * self.samplings)
+            self.__sampling_list = []
+            print(f"Inbound workload: {inbound_workload}", flush=True)
+            
             current_mcl = self.scaler.get_mcl()
             if self.should_scale(inbound_workload, current_mcl):
                 self.scaler.process_request(inbound_workload)
