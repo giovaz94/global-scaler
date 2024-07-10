@@ -1,9 +1,9 @@
 import pytest
 import numpy as np
 
-from src.components.configurator import Configurator
-from src.components.sys_scaler import SysScaler
-from src.components.guard import Guard
+from components.configurator import Configurator
+from components.sys_scaler import SysScaler
+from components.guard import Guard
 
 @pytest.fixture()
 def standard_configurator():
@@ -25,18 +25,18 @@ def standard_configurator():
     base = np.array([1, 1, 1, 1, 1, 1, 1])
 
     # Microservices MCL and MF
-    microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 300])
+    microservices_mcl = np.array([22, 24, 46.2, 46.2, 18, 18, 60])
     microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 5])
 
     # Replicas for each increment
     scale_config = np.array([
-        [0, 1, 0, 0, 1, 1, 1],  # Increment 1
-        [1, 0, 0, 0, 0, 0, 0],  # Increment 2
-        [0, 1, 0, 0, 1, 1, 1],  # Increment 3
-        [0, 0, 1, 1, 0, 0, 0],  # Increment 4
+        [1, 1, 0, 0, 1, 1, 1],  # Increment 1
+        [1, 3, 1, 1, 3, 3, 3],  # Increment 2
+        [2, 4, 1, 1, 4, 4, 4],  # Increment 3
+        [3, 6, 2, 2, 6, 6, 6],  # Increment 4
     ])
 
-    return Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big=10)
+    return Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big=2)
 
 
 

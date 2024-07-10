@@ -28,15 +28,22 @@ class Configurator:
         """
         config = self._base_config.copy()
         deltas = np.zeros(len(self._scale_components))
-        mcl = self.extimate_mcl(self._base_config)
+        mcl = self.estimate_mcl(self._base_config)
         while not self.configuration_found(mcl, target_workload, self._k_big):
+            config_found = False
             candidate_config = config
+            last_idx = 0
             for i in range(len(self._scale_components)):
+                last_idx = i
                 candidate_config = config + self._scale_components[i]
-                deltas[i] += 1
-                mcl = self.extimate_mcl(config)
+                print(candidate_config)
+                mcl = self.estimate_mcl(candidate_config)
                 if self.configuration_found(mcl, target_workload, self._k_big):
+                    config_found = True
                     break
+            deltas[last_idx] += 1
+            if config_found:
+                break
             config = candidate_config
         return deltas, mcl
 
@@ -46,8 +53,8 @@ class Configurator:
         """
         return sys_mcl - (target_workload + k_big) >= 0
     
-    def extimate_mcl(self, deployed_instances) -> int:
+    def estimate_mcl(self, deployed_instances) -> int:
         """
         Calculate an extimation of the system's mcl.
         """
-        return np.min(deployed_instances * self._components_mcl / self._components_mf)
+        return np.min((deployed_instances * self._components_mcl) / self._components_mf)
