@@ -7,6 +7,19 @@ from components.guard import Guard
 
 
 if __name__ == '__main__':
+    """             
+        Current system given to the configurator:
+
+        IDX | Service name  | MCL | MF
+        ------------------------------ 
+        0   Message Parser   110    1
+        1   Virus Scanner    120    2
+        2   Attachment Man   231    1.5
+        3   Image Analyzer   231    1.5
+        4   Image Rec         90    1.5
+        5   NSFW Detector     90    1.5
+        6   Message Analyz   300    1
+        """
 
     # Base configuration
     base = np.array([1, 1, 1, 1, 1, 1, 1])
@@ -17,13 +30,13 @@ if __name__ == '__main__':
 
     # Replicas for each increment
     scale_config = np.array([
-        [0, 1, 0, 0, 1, 1, 1],  # Increment 1
-        [1, 0, 0, 0, 0, 0, 0],  # Increment 2
-        [0, 1, 0, 0, 1, 1, 1],  # Increment 3
-        [0, 0, 1, 1, 0, 0, 0],  # Increment 4
+        [1, 1, 0, 0, 1, 1, 1],  # Increment 1
+        [1, 3, 1, 1, 3, 3, 3],  # Increment 2
+        [2, 4, 1, 1, 4, 4, 4],  # Increment 3
+        [3, 6, 2, 2, 6, 6, 6],  # Increment 4
     ])
 
-    k_big = int(os.environ.get("K_BIG", "10"))
+    k_big = int(os.environ.get("K_BIG", "2"))
     k = int(os.environ.get("K", "1"))
     sleep = int(os.environ.get("SLEEP", "5"))
 

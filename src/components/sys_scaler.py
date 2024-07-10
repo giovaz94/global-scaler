@@ -44,11 +44,7 @@ class SysScaler:
         print(f"Increments to apply: {increments_to_apply}")
         self._apply_increment(increments_to_apply)
 
-        if self.total_increment is None:
-            self.total_increment = increments_to_apply
-        else:
-            self.total_increment += increments_to_apply
-
+        self.total_increment = deltas
         print(f"Total increments: {self.total_increment}")
         self.mcl = mcl
         return self.mcl, increments_to_apply

@@ -30,16 +30,14 @@ class Configurator:
         deltas = np.zeros(len(self._scale_components))
         mcl = self.extimate_mcl(self._base_config)
         while not self.configuration_found(mcl, target_workload, self._k_big):
-            config_found = False
+            candidate_config = config
             for i in range(len(self._scale_components)):
-                config += self._scale_components[i]
+                candidate_config = config + self._scale_components[i]
                 deltas[i] += 1
                 mcl = self.extimate_mcl(config)
                 if self.configuration_found(mcl, target_workload, self._k_big):
-                    config_found = True
                     break
-            if config_found:
-                break
+            config = candidate_config
         return deltas, mcl
 
     def configuration_found(self, sys_mcl, target_workload, k_big) -> bool:
