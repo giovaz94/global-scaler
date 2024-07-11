@@ -36,6 +36,7 @@ class SysScaler:
         target_mcl -> the target mcl to reach 
         """
         deltas, mcl = self.configurator.calculate_configuration(target_mcl)
+        print(f"new mcl {mcl}")
         if self.total_increment is None:
             increments_to_apply = deltas
         else:
