@@ -13,8 +13,8 @@ class Guard:
             scaler: SysScaler,
             k_big: int,
             k: int,
-            sleep: int = 5,
-            sampling_counter: int = 10
+            sleep: int = .5,
+            sampling_counter: int = 10 #not needed anymore 
     ):
         self.guard_thread = None
 
@@ -78,17 +78,24 @@ class Guard:
         Check the conditions of the system and eventually scale it.
         """
         print("Monitoring the system...")
+        res =  self.prometheus_instance.custom_query("http_requests_total_parser")
+        init_val = float(res[0]['value'][1])
+        prec = init_val
+        iteration = 0
         while self.running:
-            print("Checking the system...", flush=True)
-            self.collect_sample()
-            if len(self.__sampling_list) < self.samplings:
-                time.sleep(self.sleep)
-                continue
-            inbound_workload = sum(self.__sampling_list) / (self.sleep * self.samplings)
-            self.__sampling_list = []
-            print(f"Inbound workload: {inbound_workload}", flush=True)
-
-            current_mcl = self.scaler.get_mcl()
-            if self.should_scale(inbound_workload, current_mcl):
-                self.scaler.process_request(inbound_workload)
             time.sleep(self.sleep)
+            print("Checking the system...", flush=True)
+            #self.collect_sample()
+            if iteration % 10 == 0 and iteration > 0:
+                inbound_workload = (tot-init_val)/10
+                print(f"Inbound workload: {inbound_workload}", flush=True)
+                current_mcl = self.scaler.get_mcl()
+                init_val = tot
+                if self.should_scale(inbound_workload, current_mcl):
+                    self.scaler.process_request(inbound_workload)
+            res =  self.prometheus_instance.custom_query("http_requests_total_parser")
+            tot = float(res[0]['value'][1])
+            if tot - prec > 0:
+                prec = tot
+                iteration += 1
+            
