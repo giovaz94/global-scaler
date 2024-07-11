@@ -30,20 +30,13 @@ class Configurator:
         deltas = np.zeros(len(self._scale_components))
         mcl = self.estimate_mcl(self._base_config)
         while not self.configuration_found(mcl, target_workload, self._k_big):
-            config_found = False
             candidate_config = config
-            last_idx = 0
             for i in range(len(self._scale_components)):
-                last_idx = i
                 candidate_config = config + self._scale_components[i]
-                print(candidate_config)
+                deltas[i] += 1
                 mcl = self.estimate_mcl(candidate_config)
                 if self.configuration_found(mcl, target_workload, self._k_big):
-                    config_found = True
                     break
-            deltas[last_idx] += 1
-            if config_found:
-                break
             config = candidate_config
         return deltas, mcl
 
