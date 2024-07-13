@@ -13,7 +13,7 @@ class Guard:
             scaler: SysScaler,
             k_big: int,
             k: int,
-            sleep: int = .5,
+            sleep: int = 1,
             sampling_counter: int = 10 #not needed anymore 
     ):
         self.guard_thread = None
@@ -80,22 +80,18 @@ class Guard:
         print("Monitoring the system...")
         res =  self.prometheus_instance.custom_query("http_requests_total_parser")
         init_val = float(res[0]['value'][1])
-        prec = init_val
-        iteration = 0
+        sl = self.sleep
         while self.running:
-            time.sleep(self.sleep)
+            time.sleep(sl)
             print("Checking the system...", flush=True)
-            #self.collect_sample()
-            if iteration % 10 == 0 and iteration > 0:
-                inbound_workload = (tot-init_val)/10
-                print(f"Inbound workload: {inbound_workload}", flush=True)
-                current_mcl = self.scaler.get_mcl()
-                init_val = tot
-                if self.should_scale(inbound_workload, current_mcl):
-                    self.scaler.process_request(inbound_workload)
+            inbound_workload = (tot-init_val)/10
+            print(f"Inbound workload: {inbound_workload}", flush=True)
+            current_mcl = self.scaler.get_mcl()
+            if self.should_scale(inbound_workload, current_mcl):
+                self.scaler.process_request(inbound_workload)
             res =  self.prometheus_instance.custom_query("http_requests_total_parser")
             tot = float(res[0]['value'][1])
-            if tot - prec > 0:
-                prec = tot
-                iteration += 1
+            if tot - init_val > 0:
+                init_val = tot
+                sl = 10
             
