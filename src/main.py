@@ -25,7 +25,7 @@ if __name__ == '__main__':
     base = np.array([1, 1, 1, 1, 1, 1, 1])
 
     # Microservices MCL and MF
-    microservices_mcl = np.array([22, 24, 46.2, 46.2, 18, 18, 60])
+    microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 120]) #parser, virus scanner, att manager, image analyzer, image rec, nsfw, mess analyzer 
     microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 2])   
 
     # Replicas for each increment
@@ -36,11 +36,11 @@ if __name__ == '__main__':
         [3, 6, 2, 2, 6, 6, 6],  # Increment 4
     ])
 
-    k_big = int(os.environ.get("K_BIG", "2"))
-    k = int(os.environ.get("K", "1"))
-    sleep = int(os.environ.get("SLEEP", "5"))
+    k_big = int(os.environ.get("K_BIG", "20"))
+    k = int(os.environ.get("K", "10"))
+    sleep = int(os.environ.get("SLEEP", "1")) #it will be automatically adjusted to 10s as soon the simulation starts 
 
     config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
-    scaler = SysScaler(config, 12.0)
+    scaler = SysScaler(config, 60.0)
     guard = Guard(scaler, k_big, k, sleep)
     guard.start()
