@@ -101,7 +101,7 @@ class Guard:
             print(f"Target workload: {target_workload}, MCL: {current_mcl}, CONFIG: {config}", flush=True)
             if iter > 0 and self.should_scale(target_workload, current_mcl):
                 target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
-                current_mcl, _ = self.scaler.process_request(target_conf)      
+                #current_mcl, _ = self.scaler.process_request(target_conf)      
 
             if tot - init_val > 0:
                 init_val = tot
