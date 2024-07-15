@@ -83,13 +83,8 @@ class Guard:
             tot = float(res[0]['value'][1])    
 
             #reactivity
-            measured_workload = (tot-init_val)/sl
+            measured_workload = (tot-init_val)/self.sleep
             target_workload = measured_workload
-            if tot - init_val > 0:
-                init_val = tot if started else init_val
-                sl = self.sleep if started else self.sleep - sl
-                iter += sl
-                started = True    
             
             #proactivity
             if iter > 0 and self.proactiveness:
@@ -107,4 +102,10 @@ class Guard:
             print(f"Target workload: {target_workload}, MCL: {current_mcl}, CONFIG: {config}", flush=True)
             if iter > 0 and self.should_scale(target_workload, current_mcl):
                 target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
-                current_mcl, _ = self.scaler.process_request(target_conf)      
+                current_mcl, _ = self.scaler.process_request(target_conf)    
+
+            if tot - init_val > 0:
+                init_val = tot if started else init_val
+                sl = self.sleep if started else self.sleep - sl
+                iter += sl
+                started = True      
