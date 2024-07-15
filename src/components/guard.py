@@ -61,28 +61,46 @@ class Guard:
         Check the conditions of the system and eventually scale it.
         """
         print("Monitoring the system...")
-        res =  self.prometheus_instance.custom_query("http_requests_total_parser")
+        res = self.prometheus_instance.custom_query("http_requests_total_parser")
         init_val = float(res[0]['value'][1])
         sl = 1
         iter = 0
+        last_pred_conf = []
+        current_mcl = self.scaler.get_mcl()
+        pred_workload = 0
+        measured_workload = 0
         if self.proactiveness:
-            target_workload = sum(self.predictions[iter-self.sleep:])/self.sleep
-                    
+            pred_workload = sum(self.predictions[iter-self.sleep:])/self.sleep
+            last_pred_conf = self.scaler.calculate_configuration(pred_workload + self.k_big)
+            current_mcl, _ = self.scaler.process_request(last_pred_conf)
+
         while self.running:
             time.sleep(sl)
             print("Checking the system...", flush=True)
-            target_workload = (tot-init_val)/sl
-            if iter > 0 and self.proactiveness:
-                target_workload = sum(self.predictions[iter-self.sleep:iter])/self.sleep
-
-            print(f"Target workload: {target_workload}", flush=True)
-            current_mcl = self.scaler.get_mcl()
-            if iter > 0 and self.should_scale(target_workload, current_mcl):
-                self.scaler.process_request(target_workload)
-            res =  self.prometheus_instance.custom_query("http_requests_total_parser")
+            res = self.prometheus_instance.custom_query("http_requests_total_parser")
             tot = float(res[0]['value'][1])
+
+            #reactivity
+            measured_workload = (tot-init_val)/sl
+            target_workload = measured_workload
+
+            #proactivity
+            if iter > 0 and self.proactiveness:
+                pred_workload = sum(self.predictions[iter-self.sleep:iter])/self.sleep
+                target_workload = pred_workload
+            
+            #proactivity + reactivity:
+            if iter > 0 and self.proactive_reactive:
+                measured_conf = self.scaler.calculate_configuration(measured_conf + self.k_big)
+                target_workload = self.mixer.mix(measured_workload, pred_workload, last_pred_conf, measured_conf)
+                last_pred_conf = self.scaler.calculate_configuration(pred_workload + self.k_big)
+            
+            print(f"Target workload: {target_workload}", flush=True)
+            if iter > 0 and self.should_scale(target_workload, current_mcl):
+                target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
+                current_mcl, _ = self.scaler.process_request(target_conf)            
+
             if tot - init_val > 0:
                 init_val = tot
                 sl = self.sleep
-                iter += sl
-            
+                iter += sl        

@@ -1,7 +1,6 @@
 
 import numpy as np
 import os
-from components.configurator import Configurator
 from components.sys_scaler import SysScaler
 from components.guard import Guard
 from components.mixer import Mixer
@@ -65,7 +64,6 @@ if __name__ == '__main__':
     k = int(os.environ.get("K", "10"))
     sleep = int(os.environ.get("SLEEP", "10")) #it will be automatically adjusted to 10s as soon the simulation starts 
     mixer = Mixer()
-    config = Configurator(base, scale_config, microservices_mcl, microservices_mf, k_big)
-    scaler = SysScaler(config, 60.0)
+    scaler = SysScaler(base, scale_config, microservices_mcl, microservices_mf)
     guard = Guard(scaler, mixer, predictions, k_big, k, sleep)
     guard.start()

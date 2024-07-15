@@ -1,19 +1,21 @@
 import yaml
 import os
-
+import numpy as np
 from kubernetes import client, config
-from components.configurator import (Configurator)
 from components.deployment import deploy_pod, delete_pod_by_image, delete_pod
-import threading
 
 
 class SysScaler:
     """
     SysScaler class will scale the system to a new configuration.
     """
-    def __init__(self, configurator: Configurator, starting_mcl: float) -> None:
-        self.mcl = starting_mcl
-        self.configurator = configurator
+    def __init__(self, base_config, scale_components, components_mcl, components_mf) -> None:
+        self._base_config = base_config
+        self._scale_components = scale_components
+        self._components_mcl = components_mcl
+        self._components_mf = components_mf
+        self.mcl = self.estimate_mcl(base_config)
+
         if os.environ.get("INCLUSTER_CONFIG") == "true":
             config.load_incluster_config()
         else:
@@ -21,13 +23,43 @@ class SysScaler:
         self.k8s_client = client.CoreV1Api()
         self.total_increment = None
 
+    def calculate_configuration(self, target_workload) -> list[int]:
+        """
+        Calculate the new configuration of the system.
+        """
+        config = self._base_config.copy()
+        deltas = np.zeros(len(self._scale_components))
+        mcl = self.estimate_mcl(self._base_config)
+        while not self.configuration_found(mcl, target_workload):
+            candidate_config = config
+            for i in range(len(self._scale_components)):
+                candidate_config = config + self._scale_components[i]
+                deltas[i] += 1
+                mcl = self.estimate_mcl(candidate_config)
+                if self.configuration_found(mcl, target_workload):
+                    break
+            config = candidate_config
+        return deltas
+
+    def configuration_found(self, sys_mcl, target_workload) -> bool:
+        """
+        Return true if the configuration is greater than 0
+        """
+        return sys_mcl - target_workload >= 0
+    
+    def estimate_mcl(self, deployed_instances) -> int:
+        """
+        Calculate an extimation of the system's mcl.
+        """
+        return np.min((deployed_instances * self._components_mcl) / self._components_mf)
+    
     def get_mcl(self) -> float:
         """
         Return the current mcl of the system.
         """
         return self.mcl
     
-    def process_request(self, target_mcl, await_deployment=False) -> tuple:
+    def process_request(self, deltas, await_deployment=False) -> tuple:
         """
         Process a scaling request.
     
@@ -35,8 +67,7 @@ class SysScaler:
         -----------
         target_mcl -> the target mcl to reach 
         """
-        deltas, mcl = self.configurator.calculate_configuration(target_mcl)
-        print(f"new mcl {mcl}")
+
         if self.total_increment is None:
             increments_to_apply = deltas
         else:
@@ -46,8 +77,8 @@ class SysScaler:
         self._apply_increment(increments_to_apply)
 
         self.total_increment = deltas
+        self.mcl = self.estimate_mcl(self.total_increment)
         print(f"Total increments: {self.total_increment}")
-        self.mcl = mcl
         return self.mcl, increments_to_apply
 
     def _apply_increment(self, inc_idx) -> None:
