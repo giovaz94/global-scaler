@@ -9,7 +9,7 @@ class SysScaler:
     """
     SysScaler class will scale the system to a new configuration.
     """
-    def __init__(self, base_config, scale_components, components_mcl, components_mf) -> None:
+    def __init__(self, base_config, scale_components, components_mcl, components_mf):
         self._base_config = base_config
         self._scale_components = scale_components
         self._components_mcl = components_mcl
@@ -23,7 +23,7 @@ class SysScaler:
         self.k8s_client = client.CoreV1Api()
         self.total_increment = None
 
-    def calculate_configuration(self, target_workload) -> list[int]:
+    def calculate_configuration(self, target_workload):
         """
         Calculate the new configuration of the system.
         """
@@ -41,32 +41,32 @@ class SysScaler:
             config = candidate_config
         return deltas
 
-    def configuration_found(self, sys_mcl, target_workload) -> bool:
+    def configuration_found(self, sys_mcl, target_workload):
         """
         Return true if the configuration is greater than 0
         """
         return sys_mcl - target_workload >= 0
     
-    def estimate_mcl(self, deployed_instances) -> int:
+    def estimate_mcl(self, deployed_instances):
         """
         Calculate an extimation of the system's mcl.
         """
         return np.min((deployed_instances * self._components_mcl) / self._components_mf)
     
-    def get_mcl(self) -> float:
+    def get_mcl(self):
         """
         Return the current mcl of the system.
         """
         return self.mcl
     
         
-    def get_current_config(self) -> float:
+    def get_current_config(self):
         """
         Return the current configuration of the system.
         """
         return self.total_increment
     
-    def process_request(self, deltas, await_deployment=False) -> tuple:
+    def process_request(self, deltas, await_deployment=False):
         """
         Process a scaling request.
     
@@ -86,7 +86,7 @@ class SysScaler:
         self.mcl = self.estimate_mcl(self.total_increment)
         return self.mcl, increments_to_apply
 
-    def _apply_increment(self, inc_idx) -> None:
+    def _apply_increment(self, inc_idx):
         """
         Apply the configuration to the cluster.
 

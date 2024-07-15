@@ -60,10 +60,13 @@ if __name__ == '__main__':
                 25, 2, 12, 32, 2, 0, 10, 20, 0, 25
     ]
 
+    
+    scores = [60/330, 90/330, 90/330, 90/330]
     k_big = int(os.environ.get("K_BIG", "20"))
     k = int(os.environ.get("K", "10"))
     sleep = int(os.environ.get("SLEEP", "10")) #it will be automatically adjusted to 10s as soon the simulation starts 
-    mixer = Mixer()
+    error_limit = int(os.environ.get("ERROR_LIMIT", "3"))
+    mixer = Mixer(error_limit, scores)
     scaler = SysScaler(base, scale_config, microservices_mcl, microservices_mf)
     guard = Guard(scaler, mixer, predictions, k_big, k, sleep)
     guard.start()

@@ -12,10 +12,10 @@ class Guard:
             self,
             scaler: SysScaler,
             mixer: Mixer,
-            predictions: list[int],
-            k_big: int = 20,
-            k: int = 10,
-            sleep: int = 10,
+            predictions,
+            k_big = 20,
+            k = 10,
+            sleep = 10,
     ):
         self.guard_thread = None
         self.log_thread = None
