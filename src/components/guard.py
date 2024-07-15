@@ -29,7 +29,7 @@ class Guard:
         self.mixer = mixer
 
         prometheus_service_address = os.environ.get("PROMETHEUS_SERVICE_ADDRESS", "localhost")
-        prometheus_service_port = 61621 #os.environ.get("PROMETHEUS_SERVICE_PORT", "8080")
+        prometheus_service_port = 51385 #os.environ.get("PROMETHEUS_SERVICE_PORT", "8080")
         prometheus_url = f"http://{prometheus_service_address}:{prometheus_service_port}"
         self.prometheus_instance = PrometheusConnect(url=prometheus_url)
 
@@ -69,6 +69,7 @@ class Guard:
         current_mcl = self.scaler.get_mcl()
         pred_workload = 0
         measured_workload = 0
+        started = False
 
         if self.proactiveness:
             pred_workload = sum(self.predictions[iter-self.sleep:])/self.sleep
@@ -85,9 +86,10 @@ class Guard:
             measured_workload = (tot-init_val)/sl
             target_workload = measured_workload
             if tot - init_val > 0:
-                init_val = tot
-                sl = self.sleep
-                iter += sl    
+                init_val = tot if started else init_val
+                sl = self.sleep if started else self.sleep - sl
+                iter += sl
+                started = True    
             
             #proactivity
             if iter > 0 and self.proactiveness:
