@@ -78,6 +78,8 @@ class Guard:
         while self.running:
             time.sleep(sl)
             print("Checking the system...", flush=True)
+            res = self.prometheus_instance.custom_query("http_requests_total_parser")
+            tot = float(res[0]['value'][1])
 
             #reactivity
             measured_workload = (tot-init_val)/sl
@@ -98,9 +100,7 @@ class Guard:
             if iter > 0 and self.should_scale(target_workload, current_mcl):
                 target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
                 current_mcl, _ = self.scaler.process_request(target_conf)      
-                      
-            res = self.prometheus_instance.custom_query("http_requests_total_parser")
-            tot = float(res[0]['value'][1])
+
             if tot - init_val > 0:
                 init_val = tot
                 sl = self.sleep
