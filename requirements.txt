@@ -8,3 +8,4 @@ numpy
 kubernetes
 requests
 retry
+pyyaml
