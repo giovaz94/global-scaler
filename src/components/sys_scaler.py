@@ -59,6 +59,13 @@ class SysScaler:
         """
         return self.mcl
     
+        
+    def get_current_config(self) -> float:
+        """
+        Return the current configuration of the system.
+        """
+        return self.total_increment
+    
     def process_request(self, deltas, await_deployment=False) -> tuple:
         """
         Process a scaling request.
@@ -73,12 +80,10 @@ class SysScaler:
         else:
             increments_to_apply = deltas - self.total_increment
         
-        print(f"Increments to apply: {increments_to_apply}")
         self._apply_increment(increments_to_apply)
 
         self.total_increment = deltas
         self.mcl = self.estimate_mcl(self.total_increment)
-        print(f"Total increments: {self.total_increment}")
         return self.mcl, increments_to_apply
 
     def _apply_increment(self, inc_idx) -> None:

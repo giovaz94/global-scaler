@@ -96,7 +96,9 @@ class Guard:
                 target_workload = self.mixer.mix(measured_workload, pred_workload, last_pred_conf, measured_conf)
                 last_pred_conf = self.scaler.calculate_configuration(pred_workload + self.k_big)
             
-            print(f"Target workload: {target_workload}", flush=True)
+            config = self.scaler.get_current_config()
+            #TODO: CREATE A LOG FUNCTION AS THE ONE WE DID IN THE ABS SIMULATION!!!!
+            print(f"Target workload: {target_workload}, MCL: {current_mcl}, CONFIG: {config}", flush=True)
             if iter > 0 and self.should_scale(target_workload, current_mcl):
                 target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
                 current_mcl, _ = self.scaler.process_request(target_conf)      
