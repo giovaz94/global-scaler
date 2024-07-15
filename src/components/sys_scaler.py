@@ -15,6 +15,7 @@ class SysScaler:
         self._components_mcl = components_mcl
         self._components_mf = components_mf
         self.mcl = self.estimate_mcl(base_config)
+        self.curr_config = base_config
 
         if os.environ.get("INCLUSTER_CONFIG") == "true":
             config.load_incluster_config()
@@ -39,6 +40,7 @@ class SysScaler:
                 if self.configuration_found(mcl, target_workload):
                     break
             config = candidate_config
+        self.curr_config = config
         return deltas
 
     def configuration_found(self, sys_mcl, target_workload):
@@ -80,10 +82,10 @@ class SysScaler:
         else:
             increments_to_apply = deltas - self.total_increment
         
-        self._apply_increment(increments_to_apply)
+        #self._apply_increment(increments_to_apply)
 
         self.total_increment = deltas
-        self.mcl = self.estimate_mcl(self.total_increment)
+        self.mcl = self.estimate_mcl(self.curr_config)
         return self.mcl, increments_to_apply
 
     def _apply_increment(self, inc_idx):

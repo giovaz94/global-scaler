@@ -29,7 +29,7 @@ class Guard:
         self.mixer = mixer
 
         prometheus_service_address = os.environ.get("PROMETHEUS_SERVICE_ADDRESS", "localhost")
-        prometheus_service_port = os.environ.get("PROMETHEUS_SERVICE_PORT", "8080")
+        prometheus_service_port = 61621 #os.environ.get("PROMETHEUS_SERVICE_PORT", "8080")
         prometheus_url = f"http://{prometheus_service_address}:{prometheus_service_port}"
         self.prometheus_instance = PrometheusConnect(url=prometheus_url)
 
@@ -79,12 +79,16 @@ class Guard:
             time.sleep(sl)
             print("Checking the system...", flush=True)
             res = self.prometheus_instance.custom_query("http_requests_total_parser")
-            tot = float(res[0]['value'][1])
+            tot = float(res[0]['value'][1])    
 
             #reactivity
             measured_workload = (tot-init_val)/sl
             target_workload = measured_workload
-
+            if tot - init_val > 0:
+                init_val = tot
+                sl = self.sleep
+                iter += sl    
+            
             #proactivity
             if iter > 0 and self.proactiveness:
                 pred_workload = sum(self.predictions[iter-self.sleep:iter])/self.sleep
@@ -101,9 +105,4 @@ class Guard:
             print(f"Target workload: {target_workload}, MCL: {current_mcl}, CONFIG: {config}", flush=True)
             if iter > 0 and self.should_scale(target_workload, current_mcl):
                 target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
-                #current_mcl, _ = self.scaler.process_request(target_conf)      
-
-            if tot - init_val > 0:
-                init_val = tot
-                sl = self.sleep
-                iter += sl        
+                current_mcl, _ = self.scaler.process_request(target_conf)      
