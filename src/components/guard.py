@@ -13,9 +13,9 @@ class Guard:
             scaler: SysScaler,
             mixer: Mixer,
             predictions: list[int],
-            k_big: int,
-            k: int,
-            sleep: int = 1,
+            k_big: int = 20,
+            k: int = 10,
+            sleep: int = 10,
     ):
         self.guard_thread = None
         self.log_thread = None
@@ -33,8 +33,8 @@ class Guard:
         prometheus_url = f"http://{prometheus_service_address}:{prometheus_service_port}"
         self.prometheus_instance = PrometheusConnect(url=prometheus_url)
 
-        self.proactiveness = True #change to an env variable
-        self.proactive_reactive = self.proactiveness and True #change to an env variable
+        self.proactiveness = os.environ.get("PROACTIVE", "false").lower() == 'true' #change to an env variable
+        self.proactive_reactive = self.proactiveness and os.environ.get("PROACTIVE_REACTIVE", "false").lower() == 'true' 
         self.predictions = predictions
 
     def start(self) -> None:
