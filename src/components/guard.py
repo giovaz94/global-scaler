@@ -61,7 +61,7 @@ class Guard:
         Check the conditions of the system and eventually scale it.
         """
         print("Monitoring the system...")
-        res = self.prometheus_instance.custom_query("http_requests_total_parser")
+        res = self.prometheus_instance.custom_query("sum(http_requests_total_parser)")
         init_val = float(res[0]['value'][1])
         sl = 1
         iter = 0
@@ -77,9 +77,10 @@ class Guard:
             current_mcl, _ = self.scaler.process_request(last_pred_conf)
 
         while self.running:
-            time.sleep(sl)
+            start = time.time()
+        
             print("Checking the system...", flush=True)
-            res = self.prometheus_instance.custom_query("http_requests_total_parser")
+            res = self.prometheus_instance.custom_query("sum(http_requests_total_parser)")
             tot = float(res[0]['value'][1])    
 
             #reactivity
@@ -109,3 +110,6 @@ class Guard:
                 sl = self.sleep if started else self.sleep - sl
                 iter += sl
                 started = True      
+            stop = time.time()
+            sl -= start - stop
+            time.sleep(sl)
