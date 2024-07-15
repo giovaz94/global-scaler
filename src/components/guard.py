@@ -2,6 +2,7 @@ import os
 import time
 import threading
 from components.sys_scaler import SysScaler
+from components.mixer import Mixer
 from prometheus_api_client import PrometheusConnect
 
 
@@ -10,13 +11,13 @@ class Guard:
     def __init__(
             self,
             scaler: SysScaler,
+            mixer: Mixer,
             predictions: list[int],
             k_big: int,
             k: int,
             sleep: int = 1,
     ):
         self.guard_thread = None
-
         self.log_thread = None
         self.k_big = k_big
         self.k = k
@@ -25,6 +26,7 @@ class Guard:
 
         self.request_scaling = False
         self.scaler = scaler
+        self.mixer = mixer
 
         prometheus_service_address = os.environ.get("PROMETHEUS_SERVICE_ADDRESS", "localhost")
         prometheus_service_port = os.environ.get("PROMETHEUS_SERVICE_PORT", "8080")
@@ -32,6 +34,7 @@ class Guard:
         self.prometheus_instance = PrometheusConnect(url=prometheus_url)
 
         self.proactiveness = True #change to an env variable
+        self.proactive_reactive = self.proactiveness and True #change to an env variable
         self.predictions = predictions
 
     def start(self) -> None:
@@ -62,15 +65,19 @@ class Guard:
         init_val = float(res[0]['value'][1])
         sl = 1
         iter = 0
+        if self.proactiveness:
+            target_workload = sum(self.predictions[iter-self.sleep:])/self.sleep
+                    
         while self.running:
             time.sleep(sl)
             print("Checking the system...", flush=True)
             target_workload = (tot-init_val)/sl
             if iter > 0 and self.proactiveness:
-                target_workload = sum(self.predictions[iter-self.sleep:iter])/sl
+                target_workload = sum(self.predictions[iter-self.sleep:iter])/self.sleep
+
             print(f"Target workload: {target_workload}", flush=True)
             current_mcl = self.scaler.get_mcl()
-            if self.should_scale(target_workload, current_mcl):
+            if iter > 0 and self.should_scale(target_workload, current_mcl):
                 self.scaler.process_request(target_workload)
             res =  self.prometheus_instance.custom_query("http_requests_total_parser")
             tot = float(res[0]['value'][1])
