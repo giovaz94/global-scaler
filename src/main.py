@@ -18,7 +18,7 @@ if __name__ == '__main__':
         3   Image Analyzer   231    1.5
         4   Image Rec         90    1.5
         5   NSFW Detector     90    1.5
-        6   Message Analyz   300    1
+        6   Message Analyz   300    2
         """
 
     # Base configuration
@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # Microservices MCL and MF
     microservices_mcl = np.array([22, 24, 46.2, 46.2, 18, 18, 60])
-    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 5])   
+    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 2])   
 
     # Replicas for each increment
     scale_config = np.array([
