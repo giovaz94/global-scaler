@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   generateName: sys-pod-image-analyzer-
 spec:
-  nodeName: testing-cluster-pool-rgz07
+  nodeName: testing-cluster-pool-r9xc0
   containers:
   - name: image-analyzer
     image: giovaz94/image-analyzer-service:development

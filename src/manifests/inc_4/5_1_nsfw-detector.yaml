@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   generateName: sys-pod-nsfw-detector-
 spec:
-  nodeName: testing-cluster-pool-rgz0u
+  nodeName: testing-cluster-pool-r9xc0
   containers:
   - name: nsfw-detector
     image: giovaz94/nsfw-detector-service:development
