@@ -1,3 +1,4 @@
+import time
 import yaml
 import os
 import numpy as np
@@ -82,7 +83,7 @@ class SysScaler:
         else:
             increments_to_apply = deltas - self.total_increment
         
-        #self._apply_increment(increments_to_apply)
+        self._apply_increment(increments_to_apply)
 
         self.total_increment = deltas
         self.mcl = self.estimate_mcl(self.curr_config)
@@ -105,6 +106,7 @@ class SysScaler:
             num = int(inc_idx[i])
             iter_number = abs(num)
 
+            start = time.time()
             for _ in range(iter_number):
                 for file in manifest_files:
                     if num > 0:
@@ -115,3 +117,5 @@ class SysScaler:
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
                             asyncio.create_task(delete_pod_by_image(self.k8s_client, image_name, node_name, False))
+            stop = time.time()
+            print(f"Time:  {stop-start}")
