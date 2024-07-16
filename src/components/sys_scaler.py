@@ -120,8 +120,9 @@ class SysScaler:
                 for file in manifest_files:
                     print(f"File: {file}")
                     if num > 0:
+                        target_path = os.path.join(manifest_path, file)
                         self.el.call_soon_threadsafe(
-                            lambda: deploy_pod(self.k8s_client, os.path.join(manifest_path, file), False)
+                            lambda: deploy_pod(self.k8s_client, target_path, False)
                         )
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
