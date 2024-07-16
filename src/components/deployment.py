@@ -67,7 +67,7 @@ def delete_pod_by_image(client, image_name, node_name, await_deletion=False) -> 
     """
 
     try:
-        print(f"Deleting pod with image {image_name} on node {node_name}")
+        print(f"Trying to delete {image_name} on node {node_name}")
         pods = client.list_namespaced_pod("default")
         for pod in pods.items:
             if (
@@ -77,6 +77,7 @@ def delete_pod_by_image(client, image_name, node_name, await_deletion=False) -> 
                     pod.metadata.deletion_timestamp is None
             ):
                 found_pod_name = pod.metadata.name
+                print(f"Found {found_pod_name} on node {node_name}")
                 delete_pod(client, found_pod_name, await_deletion)
                 break
     except Exception as e:
