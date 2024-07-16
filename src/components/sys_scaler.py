@@ -124,7 +124,7 @@ class SysScaler:
                     if num > 0:
                         target_path = os.path.join(manifest_path, file)
                         self.el.call_soon_threadsafe(
-                            lambda path=target_path: deploy_pod(self.k8s_client, path, False)
+                            lambda path=target_path: deploy_pod(self.k8s_client, path)
                         )
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
