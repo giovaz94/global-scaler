@@ -43,7 +43,8 @@ def delete_pod(client, image_name, node_name, namespace="default") -> None:
         pods = client.list_namespaced_pod("default")
         for pod in pods.items:
             if (
-                    pod.spec.containers[0].startswith(image_name) and
+                    # Check if pod name starts with the image name
+                    pod.metadata.name.startswith(image_name) and
                     pod.spec.node_name == node_name and
                     pod.metadata.deletion_timestamp is None
             ):
