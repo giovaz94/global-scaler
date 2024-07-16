@@ -3,7 +3,7 @@ import yaml
 import os
 import numpy as np
 from kubernetes import client, config
-from components.deployment import deploy_pod, delete_pod_by_image, delete_pod
+from components.deployment import deploy_pod, delete_pod
 import asyncio
 from threading import Thread
 
@@ -129,7 +129,7 @@ class SysScaler:
                             generate_name = pod_manifest['metadata']['generateName']
                             node_name = pod_manifest["spec"]["nodeName"]
                             self.el.call_soon_threadsafe(
-                                lambda: delete_pod_by_image(self.k8s_client, generate_name, node_name)
+                                lambda: delete_pod(self.k8s_client, generate_name, node_name)
                             )
             stop = time.time()
             print(f"Time: {stop-start}")
