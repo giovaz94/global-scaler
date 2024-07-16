@@ -5,6 +5,12 @@ import numpy as np
 from kubernetes import client, config
 from components.deployment import deploy_pod, delete_pod_by_image, delete_pod
 import asyncio
+from threading import Thread
+
+
+def startup_event_loop(event_loop):
+    asyncio.set_event_loop(event_loop)
+    event_loop.run_forever()
 
 class SysScaler:
     """
@@ -18,17 +24,15 @@ class SysScaler:
         self.mcl = self.estimate_mcl(base_config)
         self.curr_config = base_config
 
-        self.loop = asyncio.new_event_loop()
-        self.loop.run_forever()
-        asyncio.set_event_loop(self.loop)
-
-
         if os.environ.get("INCLUSTER_CONFIG") == "true":
             config.load_incluster_config()
         else:
             config.load_kube_config()
         self.k8s_client = client.CoreV1Api()
         self.total_increment = None
+
+        self.el = asyncio.new_event_loop()
+        Thread(target=lambda: startup_event_loop(self.el), daemon=True).start()
 
     def calculate_configuration(self, target_workload):
         """
@@ -115,12 +119,16 @@ class SysScaler:
             for _ in range(iter_number):
                 for file in manifest_files:
                     if num > 0:
-                        asyncio.create_task(deploy_pod(self.k8s_client, os.path.join(manifest_path, file), False))
+                        self.el.call_soon_threadsafe(
+                            lambda: deploy_pod(self.k8s_client, os.path.join(manifest_path, file), False)
+                        )
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
-                            asyncio.create_task(delete_pod_by_image(self.k8s_client, image_name, node_name, False))
+                            self.el.call_soon_threadsafe(
+                                lambda: delete_pod_by_image(self.k8s_client, image_name, node_name, False)
+                            )
             stop = time.time()
-            print(f"Time:  {stop-start}")
+            print(f"Time: {stop-start}")
