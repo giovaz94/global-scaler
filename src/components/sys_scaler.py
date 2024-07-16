@@ -118,7 +118,6 @@ class SysScaler:
             start = time.time()
             for _ in range(iter_number):
                 for file in manifest_files:
-                    print(f"File: {file}")
                     if num > 0:
                         target_path = os.path.join(manifest_path, file)
                         self.el.call_soon_threadsafe(
