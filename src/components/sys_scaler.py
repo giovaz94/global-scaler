@@ -19,7 +19,9 @@ class SysScaler:
         self.curr_config = base_config
 
         self.loop = asyncio.new_event_loop()
+        self.loop.run_forever()
         asyncio.set_event_loop(self.loop)
+
 
         if os.environ.get("INCLUSTER_CONFIG") == "true":
             config.load_incluster_config()
