@@ -4,7 +4,7 @@ import os
 from kubernetes.client.rest import ApiException
 
 
-def deploy_pod(client, manifest_file_path, await_running=False) -> None:
+def deploy_pod(client, manifest_file_path) -> None:
     """
     Deploy a pod in the cluster.
 
@@ -16,14 +16,7 @@ def deploy_pod(client, manifest_file_path, await_running=False) -> None:
         print(f"Deploying pod from {manifest_file_path}")
         with open(manifest_file_path, 'r') as manifest_file:
             pod_manifest = yaml.safe_load(manifest_file)
-            pod = client.create_namespaced_pod(body=pod_manifest, namespace="default")
-            pod_name = pod.metadata.name
-            if await_running:
-                while True:
-                    pod_info = client.read_namespaced_pod_status(pod_name, "default")
-                    if pod_info.status.phase == 'Running':
-                        break
-                time.sleep(1)
+            client.create_namespaced_pod(body=pod_manifest, namespace="default")
     except ApiException as e:
         raise Exception(f"Error deploying pod: {e}")
 

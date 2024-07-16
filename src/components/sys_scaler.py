@@ -1,4 +1,6 @@
 import time
+from copy import copy
+
 import yaml
 import os
 import numpy as np
@@ -112,6 +114,7 @@ class SysScaler:
             idx = i + 1
             manifest_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "manifests", f"inc_{idx}")
             manifest_files = os.listdir(manifest_path)
+
             num = int(inc_idx[i])
             iter_number = abs(num)
 
@@ -121,7 +124,7 @@ class SysScaler:
                     if num > 0:
                         target_path = os.path.join(manifest_path, file)
                         self.el.call_soon_threadsafe(
-                            lambda: deploy_pod(self.k8s_client, target_path, False)
+                            lambda path=target_path: deploy_pod(self.k8s_client, path, False)
                         )
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
@@ -129,7 +132,7 @@ class SysScaler:
                             generate_name = pod_manifest['metadata']['generateName']
                             node_name = pod_manifest["spec"]["nodeName"]
                             self.el.call_soon_threadsafe(
-                                lambda: delete_pod(self.k8s_client, generate_name, node_name)
+                                lambda name=generate_name, node=node_name: delete_pod(self.k8s_client, name, node)
                             )
             stop = time.time()
             print(f"Time: {stop-start}")
