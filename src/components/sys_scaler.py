@@ -66,7 +66,7 @@ class SysScaler:
         """
         Return the current configuration of the system.
         """
-        return self.total_increment
+        return self.curr_config
     
     def process_request(self, deltas, await_deployment=False):
         """

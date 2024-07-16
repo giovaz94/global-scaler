@@ -68,7 +68,6 @@ class Guard:
         last_pred_conf = []
         current_mcl = self.scaler.get_mcl()
         pred_workload = 0
-        measured_workload = 0
 
         if self.proactiveness:
             pred_workload = sum(self.predictions[iter-self.sleep:])/self.sleep
@@ -108,7 +107,8 @@ class Guard:
                 init_val = tot if iter > 0 else init_val
                 sl = self.sleep if iter > 0 else self.sleep - sl
                 iter += sl
-            stop = time.time()
-            time_difference = stop - start
-            sl -= time_difference
+                stop = time.time()
+                time_difference = stop - start
+                sl -= time_difference
+
             time.sleep(sl)
