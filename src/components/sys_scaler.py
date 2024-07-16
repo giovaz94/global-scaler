@@ -18,6 +18,9 @@ class SysScaler:
         self.mcl = self.estimate_mcl(base_config)
         self.curr_config = base_config
 
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
+
         if os.environ.get("INCLUSTER_CONFIG") == "true":
             config.load_incluster_config()
         else:
