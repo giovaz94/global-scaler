@@ -118,6 +118,7 @@ class SysScaler:
             start = time.time()
             for _ in range(iter_number):
                 for file in manifest_files:
+                    print(f"File: {file}")
                     if num > 0:
                         self.el.call_soon_threadsafe(
                             lambda: deploy_pod(self.k8s_client, os.path.join(manifest_path, file), False)
