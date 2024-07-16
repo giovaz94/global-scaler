@@ -3,7 +3,7 @@ import os
 import numpy as np
 from kubernetes import client, config
 from components.deployment import deploy_pod, delete_pod_by_image, delete_pod
-
+import asyncio
 
 class SysScaler:
     """
@@ -108,10 +108,10 @@ class SysScaler:
             for _ in range(iter_number):
                 for file in manifest_files:
                     if num > 0:
-                        deploy_pod(self.k8s_client, os.path.join(manifest_path, file), False)
+                        asyncio.create_task(deploy_pod(self.k8s_client, os.path.join(manifest_path, file), False))
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
                             image_name = pod_manifest["spec"]["containers"][0]["image"]
                             node_name = pod_manifest["spec"]["nodeName"]
-                            delete_pod_by_image(self.k8s_client, image_name, node_name, False)
+                            asyncio.create_task(delete_pod_by_image(self.k8s_client, image_name, node_name, False))
