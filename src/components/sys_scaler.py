@@ -126,10 +126,10 @@ class SysScaler:
                     else:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
-                            image_name = pod_manifest["spec"]["containers"][0]["image"]
+                            generate_name = pod_manifest['metadata']['generateName']
                             node_name = pod_manifest["spec"]["nodeName"]
                             self.el.call_soon_threadsafe(
-                                lambda: delete_pod_by_image(self.k8s_client, image_name, node_name, False)
+                                lambda: delete_pod_by_image(self.k8s_client, generate_name, node_name)
                             )
             stop = time.time()
             print(f"Time: {stop-start}")

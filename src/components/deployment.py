@@ -28,35 +28,7 @@ def deploy_pod(client, manifest_file_path, await_running=False) -> None:
         raise Exception(f"Error deploying pod: {e}")
 
 
-def delete_pod(client, pod_name, await_deletion=False) -> None:
-    """
-    Delete a pod by name.
-
-    Arguments
-    -----------
-    pod_name -> the name of the pod to delete
-    """
-    try:
-        client.delete_namespaced_pod(name=pod_name, namespace="default")
-        if await_deletion:
-            while True:
-                try:
-                    client.read_namespaced_pod_status(pod_name, "default")
-                except ApiException as e:
-                    if e.status == 404:
-                        print(f"Pod {pod_name} successfully deleted.")
-                        break
-                time.sleep(1)
-    except ApiException as e:
-        if e.status == 404:
-            print(f"Pod {pod_name} not found.")
-        else:
-            raise Exception(f"Error deleting pod: {e}")
-    except Exception as e:
-        raise Exception(f"Error deleting pod: {e}")
-
-
-def delete_pod_by_image(client, image_name, node_name, await_deletion=False) -> None:
+def delete_pod(client, image_name, node_name, namespace="default") -> None:
     """
     Delete a pod by image name.
     The deleted pod must be in a healthy state.
@@ -71,14 +43,12 @@ def delete_pod_by_image(client, image_name, node_name, await_deletion=False) -> 
         pods = client.list_namespaced_pod("default")
         for pod in pods.items:
             if (
-                    pod.spec.containers[0].image == image_name and
+                    pod.spec.containers[0].startswith(image_name) and
                     pod.spec.node_name == node_name and
-                    pod.metadata.name.startswith("sys-pod") and
                     pod.metadata.deletion_timestamp is None
             ):
                 found_pod_name = pod.metadata.name
-                print(f"Found {found_pod_name} on node {node_name}")
-                delete_pod(client, found_pod_name, await_deletion)
+                client.delete_namespaced_pod(name=found_pod_name, namespace=namespace)
                 break
     except Exception as e:
         raise Exception(f"Error deleting pod: {e}")
