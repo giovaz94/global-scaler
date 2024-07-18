@@ -5,7 +5,7 @@ metadata:
   labels:
     app: image-recognizer
 spec:
-  nodeName: testing-cluster-pool-r9xc1
+  nodeName: testing-cluster-pool-bnp1c
   containers:
   - name: image-recognizer
     image: giovaz94/image-recognizer-service:development

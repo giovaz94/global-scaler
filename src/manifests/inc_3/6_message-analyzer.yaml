@@ -5,7 +5,7 @@ metadata:
   labels:
     app: message-analyzer
 spec:
-  nodeName: testing-cluster-pool-r9xcz
+  nodeName: testing-cluster-pool-bnp1u
   containers:
   - name: message-analyzer
     image: giovaz94/message-analyzer-service:development
