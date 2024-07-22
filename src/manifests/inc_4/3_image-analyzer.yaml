@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Pod
 metadata:
   generateName: sys-pod-image-analyzer-
-spec:
   labels:
     app: image-analyzer
+spec:
   nodeName: testing-cluster-pool-bnp17
   containers:
   - name: image-analyzer
