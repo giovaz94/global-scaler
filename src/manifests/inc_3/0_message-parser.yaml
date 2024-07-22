@@ -2,8 +2,10 @@ apiVersion: v1
 kind: Pod
 metadata:
   generateName: sys-pod-message-parser-
+  labels:
+    app: parser
 spec:
-  nodeName: testing-cluster-pool-bnp1u
+  nodeName:  testing-cluster-pool-bnp17
   containers:
   - name: parser
     image: giovaz94/parser-service:development
