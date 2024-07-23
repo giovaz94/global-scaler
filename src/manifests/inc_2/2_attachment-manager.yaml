@@ -5,7 +5,7 @@ metadata:
   labels:
     app: attachment-manager
 spec:
-  nodeName:  testing-cluster-pool-bnp17
+  nodeName: testing-cluster-pool-bc34s
   containers:
   - name: attachment-manager
     image: giovaz94/attachment-manager-service:development
