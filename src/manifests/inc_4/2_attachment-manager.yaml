@@ -4,7 +4,7 @@ metadata:
   generateName: sys-pod-attachment-manager-
   labels:
     app: attachment-manager
-  spec:
+spec:
   nodeName:  testing-cluster-pool-bnp17
   containers:
   - name: attachment-manager
