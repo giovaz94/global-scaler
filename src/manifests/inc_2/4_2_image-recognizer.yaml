@@ -26,8 +26,8 @@ spec:
         value: "redis-service"
       - name: MCL
         value: "90"
-            - name: PREFETCH
-              value: "30"
+      - name: PREFETCH
+         value: "30"
 
 
     
