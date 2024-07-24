@@ -8,7 +8,7 @@ spec:
   nodeName: testing-cluster-pool-bc345
   containers:
   - name: attachment-manager
-    image: giovaz94/attachment-manager-service:development
+    image: giovaz94/attachment-manager-service:refactor-remove-rabbitmq
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"

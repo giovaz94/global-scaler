@@ -8,7 +8,7 @@ spec:
   nodeName:  testing-cluster-pool-bc34s
   containers:
   - name: image-recognizer
-    image: giovaz94/image-recognizer-service:development
+    image: giovaz94/image-recognizer-service:refactor-remove-rabbitmq
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
