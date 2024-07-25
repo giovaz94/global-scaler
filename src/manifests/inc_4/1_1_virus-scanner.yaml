@@ -5,7 +5,7 @@ metadata:
   labels:
     app: virus-scanner
 spec:
-  nodeName: testing-cluster-pool-bc345
+  nodeName: testing-cluster-pool-b7x67
   containers:
   - name: virus-scanner
     image: giovaz94/virus-scanner-service:refactor-remove-rabbitmq

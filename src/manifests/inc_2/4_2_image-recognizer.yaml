@@ -5,7 +5,7 @@ metadata:
   labels:
     app: image-recognizer
 spec:
-  nodeName:   testing-cluster-pool-bc34k
+  nodeName: testing-cluster-pool-b7x6m
   containers:
   - name: image-recognizer
     image: giovaz94/image-recognizer-service:refactor-remove-rabbitmq

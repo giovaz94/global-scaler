@@ -5,7 +5,7 @@ metadata:
   labels:
     app: parser
 spec:
-  nodeName:  testing-cluster-pool-bc34s
+  nodeName: testing-cluster-pool-b7x68
   containers:
   - name: parser
     image: giovaz94/parser-service:refactor-remove-rabbitmq
