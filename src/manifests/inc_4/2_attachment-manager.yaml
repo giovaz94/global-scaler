@@ -24,5 +24,5 @@ spec:
         value: "http://monitor-service:3200"
       - name: MCL
         value: "231"
-            - name: PREFETCH
-              value: "10"
+      - name: PREFETCH
+        value: "10"
