@@ -6,4 +6,4 @@ spec:
   nodeName: testing-cluster-pool-rjxyb
   containers:
   - name: parser
-    image: giovaz94/parser-service:refactor-remove-rabbitmq
+    image: giovaz94/parser-service:development

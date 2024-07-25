@@ -6,7 +6,7 @@ spec:
   nodeName: testing-cluster-pool-b7x68
   containers:
   - name: image-analyzer
-    image: giovaz94/image-analyzer-service:refactor-remove-rabbitmq
+    image: giovaz94/image-analyzer-service:development
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
