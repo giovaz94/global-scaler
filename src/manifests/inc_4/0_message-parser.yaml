@@ -27,5 +27,5 @@ spec:
       - name: MCL
         value: "110"
       - name: PREFETCH
-        value: "50"
+        value: "150"
 
