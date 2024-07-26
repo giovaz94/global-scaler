@@ -37,7 +37,7 @@ def delete_pod(client, image_name, node_name, namespace="default") -> None:
         for pod in pods.items:
             if (
                     pod.metadata.name.startswith(image_name) and
-                    pod.spec.node_name == node_name and
+                    #pod.spec.node_name == node_name and
                     pod.metadata.deletion_timestamp is None
             ):
                 found_pod_name = pod.metadata.name

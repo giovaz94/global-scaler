@@ -130,7 +130,7 @@ class SysScaler:
                         with open(os.path.join(manifest_path, file), 'r') as manifest_file:
                             pod_manifest = yaml.safe_load(manifest_file)
                             generate_name = pod_manifest['metadata']['generateName']
-                            node_name = pod_manifest["spec"]["nodeName"]
+                            node_name = ''#pod_manifest["spec"]["#nodeName"]
                             self.el.call_soon_threadsafe(
                                 lambda name=generate_name, node=node_name: delete_pod(self.k8s_client, name, node)
                             )

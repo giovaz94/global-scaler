@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: Pod
-metadata:
-  generateName: sys-pod-message-analyzer-
-spec:
-  nodeName: testing-cluster-pool-rjxyb
-  containers:
-  - name: message-analyzer
-    image: giovaz94/message-analyzer-service:development

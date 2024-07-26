@@ -5,7 +5,7 @@ metadata:
   labels:
     app: image-analyzer
 spec:
-  nodeName: testing-cluster-pool-b7x6u
+  #nodeName: testing-cluster-pool-b7x6u
   containers:
   - name: image-analyzer
     image: giovaz94/image-analyzer-service:development
