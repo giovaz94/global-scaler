@@ -8,7 +8,7 @@ spec:
   #nodeName:  testing-cluster-pool-b7x6c
   containers:
   - name: parser
-    image: giovaz94/parser-service:development
+    image: giovaz94/parser-service:experimental
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"

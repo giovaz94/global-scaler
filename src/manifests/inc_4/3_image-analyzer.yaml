@@ -8,7 +8,7 @@ spec:
   #nodeName: testing-cluster-pool-b7x68
   containers:
   - name: image-analyzer
-    image: giovaz94/image-analyzer-service:development
+    image: giovaz94/image-analyzer-service:experimental
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
