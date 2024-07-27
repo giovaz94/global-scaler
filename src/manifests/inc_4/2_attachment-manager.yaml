@@ -8,7 +8,7 @@ spec:
   #nodeName: testing-cluster-pool-b7x6u
   containers:
   - name: attachment-manager
-    image: giovaz94/attachment-manager-service:experimental
+    image: giovaz94/attachment-manager-service:exp
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"

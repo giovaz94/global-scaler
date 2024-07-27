@@ -8,7 +8,7 @@ spec:
   #nodeName: testing-cluster-pool-b7x6y
   containers:
   - name: virus-scanner
-    image: giovaz94/virus-scanner-service:experimental
+    image: giovaz94/virus-scanner-service:exp
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
