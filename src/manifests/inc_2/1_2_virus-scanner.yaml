@@ -8,7 +8,7 @@ spec:
   #nodeName: testing-cluster-pool-b7x6u
   containers:
   - name: virus-scanner
-    image: giovaz94/virus-scanner-service:exp
+    image: lorenzobacchiani/virus-scanner
     env:
       - name: HOSTNAME
         value: "rabbitmq-service"
@@ -26,6 +26,8 @@ spec:
         value: "120"
       - name: PREFETCH
         value: "120"
+      - name: REDIS_HOST
+        value: "redis-service"
 
    
     
