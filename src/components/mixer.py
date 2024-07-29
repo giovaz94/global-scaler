@@ -7,14 +7,14 @@ class Mixer:
 
     def __compute_diff__(self, pred_conf, actual_conf):
         diff = []
-        for i in range(pred_conf):
-            diff[i] = pred_conf[i] - actual_conf[i]
+        for i in range(len(pred_conf)):
+            diff.append(pred_conf[i] - actual_conf[i])
         return diff
     
     def __compute_weight__(self, pred_conf, actual_conf):
         curr_weight = 0.0
         diffs = self.__compute_diff__(pred_conf, actual_conf)
-        for i in range(pred_conf):
+        for i in range(len(pred_conf)):
             curr_weight += abs(diffs[i] * self.scores[i])
         return min(curr_weight, 1)
     
@@ -25,7 +25,7 @@ class Mixer:
     def __compute_distance(self):
         num = 0.0
         den = 0.0
-        for i in range(self.errors):
+        for i in range(len(self.errors)):
             num += self.errors[i] * (i + 1)
             den += i + 1
         return num/den 
