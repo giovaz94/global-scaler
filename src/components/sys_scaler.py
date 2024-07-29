@@ -135,4 +135,3 @@ class SysScaler:
                                 lambda name=generate_name, node=node_name: delete_pod(self.k8s_client, name, node)
                             )
             stop = time.time()
-            print(f"Time: {stop-start}")

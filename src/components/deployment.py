@@ -13,7 +13,6 @@ def deploy_pod(client, manifest_file_path) -> None:
     manifest_file_path -> path to the manifest file to deploy
     """
     try:
-        print(f"Deploying pod from {manifest_file_path}")
         with open(manifest_file_path, 'r') as manifest_file:
             pod_manifest = yaml.safe_load(manifest_file)
             client.create_namespaced_pod(body=pod_manifest, namespace="default")
@@ -32,7 +31,6 @@ def delete_pod(client, image_name, node_name, namespace="default") -> None:
     """
 
     try:
-        print(f"Trying to delete {image_name} on node {node_name}")
         pods = client.list_namespaced_pod("default")
         for pod in pods.items:
             if (
