@@ -14,5 +14,7 @@ spec:
         value: "120"
       - name: REDIS_HOST
         value: "redis-service"
+      - name: LIMIT
+        value: "500"
    
     

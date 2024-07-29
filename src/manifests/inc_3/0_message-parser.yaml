@@ -14,3 +14,5 @@ spec:
         value: "redis-service"
       - name: MCL
         value: "110"
+      - name: LIMIT
+        value: "500"

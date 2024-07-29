@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     
     scores = [60/330, 90/330, 90/330, 90/330]
-    k_big = int(os.environ.get("K_BIG", "20"))
+    k_big = int(os.environ.get("K_BIG", "30"))
     k = int(os.environ.get("K", "10"))
     sleep = int(os.environ.get("SLEEP", "10")) #it will be automatically adjusted to 10s as soon the simulation starts 
     error_limit = int(os.environ.get("ERROR_LIMIT", "3"))
