@@ -93,6 +93,7 @@ class Guard:
             completed = self._execute_prometheus_query("sum(increase(http_requests_total_global[10s]))")
             latency = self._execute_prometheus_query("sum(increase(http_requests_total_time[10s]))")
             avg_lat = latency/(completed if completed > 0 else 1)
+            loss = self._execute_prometheus_query("sum(increase(message_loss[10s]))")
             toPrint = str(iter) + " " + str(avg_lat)
               
 
@@ -113,7 +114,7 @@ class Guard:
                 target_workload = self.mixer.mix(measured_workload, pred_workload, last_pred_conf, measured_conf)
                 last_pred_conf = self.scaler.calculate_configuration(pred_workload + self.k_big)
                 toPrint += " mixed: " + str(target_workload)
-            toPrint += " comp: " + str(completed) + " supp: " + str(current_mcl) + " inst: " + str(np.sum(config))
+            toPrint += " comp: " + str(completed) + " rej: " + str(loss) + " supp: " + str(current_mcl) + " inst: " + str(np.sum(config))
             config = self.scaler.get_current_config()
             print(toPrint)
 
