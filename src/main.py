@@ -25,15 +25,15 @@ if __name__ == '__main__':
     base = np.array([1, 1, 1, 1, 1, 1, 1])
 
     # Microservices MCL and MF
-    microservices_mcl = np.array([110, 120, 231, 231, 90, 90, 120]) #parser, virus scanner, att manager, image analyzer, image rec, nsfw, mess analyzer 
-    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 1.5, 1.5, 2])   
+    microservices_mcl = np.array([110, 120, 231, 231, 120]) #parser, virus scanner, att manager, image analyzer, image rec, nsfw, mess analyzer 
+    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 2])   
 
     # Replicas for each increment
     scale_config = np.array([
-        [1, 1, 0, 0, 1, 1, 1],  # Increment 1
-        [1, 3, 1, 1, 3, 3, 3],  # Increment 2
-        [2, 4, 1, 1, 4, 4, 4],  # Increment 3
-        [3, 6, 2, 2, 6, 6, 6],  # Increment 4
+        [1, 1, 0, 0, 1],  # Increment 1
+        [1, 3, 1, 1, 3],  # Increment 2
+        [2, 4, 1, 1, 4],  # Increment 3
+        [3, 6, 2, 2, 6],  # Increment 4
     ])
 
     #worklod predictions
