@@ -108,6 +108,7 @@ class Guard:
                 target_workload = pred_workload
                 toPrint += " next: " + str(pred_workload)
             toPrint += " measured: " + str(measured_workload)
+            config = self.scaler.get_current_config()
             #proactivity + reactivity:
             if iter > 0 and self.proactive_reactive:
                 measured_conf = self.scaler.calculate_configuration(measured_workload + self.k_big)
@@ -115,7 +116,6 @@ class Guard:
                 last_pred_conf = self.scaler.calculate_configuration(pred_workload + self.k_big)
                 toPrint += " mixed: " + str(target_workload)
             toPrint += " tot: " + str(measured_workload * self.sleep) + " comp: " + str(completed) + " rej: " + str(loss) + " supp: " + str(current_mcl) + " inst: " + str(3+np.sum(config))
-            config = self.scaler.get_current_config()
             print(toPrint, flush=True)
 
             if iter > 0 and self.should_scale(target_workload, current_mcl):
