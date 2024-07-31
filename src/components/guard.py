@@ -116,7 +116,7 @@ class Guard:
                 toPrint += " mixed: " + str(target_workload)
             toPrint += " tot: " + str(measured_workload * self.sleep) + " comp: " + str(completed) + " rej: " + str(loss) + " supp: " + str(current_mcl) + " inst: " + str(3+np.sum(config))
             config = self.scaler.get_current_config()
-            print(toPrint)
+            print(toPrint, flush=True)
 
             if iter > 0 and self.should_scale(target_workload, current_mcl):
                 target_conf = self.scaler.calculate_configuration(target_workload + self.k_big)
