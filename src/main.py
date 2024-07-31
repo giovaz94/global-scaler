@@ -22,11 +22,11 @@ if __name__ == '__main__':
         """
 
     # Base configuration
-    base = np.array([1, 1, 1, 1, 1, 1, 1])
+    base = np.array([1, 1, 1, 1, 1])
 
     # Microservices MCL and MF
-    microservices_mcl = np.array([110, 120, 231, 231, 120]) #parser, virus scanner, att manager, image analyzer, image rec, nsfw, mess analyzer 
-    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 2])   
+    microservices_mcl = np.array([110, 120, 231, 231, 300]) #parser, virus scanner, att manager, image analyzer, mess analyzer 
+    microservices_mf = np.array([1.0, 2.0, 1.5, 1.5, 5])   
 
     # Replicas for each increment
     scale_config = np.array([
@@ -62,7 +62,7 @@ if __name__ == '__main__':
 
     
     scores = [60/330, 90/330, 90/330, 90/330]
-    k_big = int(os.environ.get("K_BIG", "30"))
+    k_big = int(os.environ.get("K_BIG", "20"))
     k = int(os.environ.get("K", "10"))
     sleep = int(os.environ.get("SLEEP", "10")) #it will be automatically adjusted to 10s as soon the simulation starts 
     error_limit = int(os.environ.get("ERROR_LIMIT", "3"))
