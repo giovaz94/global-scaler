@@ -5,16 +5,18 @@ metadata:
   labels:
     app: message-analyzer
 spec:
-  #nodeName: testing-cluster-pool-b7x6m
+  #nodeName: testing-cluster-pool-b7x6f
   containers:
   - name: message-analyzer
-    image: lorenzobacchiani/message-analyzer
+    image: giovaz94/message-analyzer-service
     env:
       - name: REDIS_HOST
         value: "redis-service"
       - name: MCL
         value: "300"
       - name: LIMIT
-        value: "1000"
+        value: "200"
+      - name: DELAY
+        value: "750"
       - name: BATCH
-        value: "300"
+        value: "270"

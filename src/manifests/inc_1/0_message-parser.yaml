@@ -8,13 +8,15 @@ spec:
   #nodeName:  testing-cluster-pool-b7x6c
   containers:
   - name: parser
-    image: lorenzobacchiani/parser
+    image: giovaz94/parser-service
     env:
       - name: REDIS_HOST
         value: "redis-service"
       - name: MCL
         value: "110"
       - name: LIMIT
-        value: "1000"
+        value: "200"
+      - name: DELAY
+        value: "750"
       - name: BATCH
-        value: "110"
+        value: "80"
